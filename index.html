@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Компас — поиск в интернете</title>
+<title>Компас — Веб-Браузер</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
-  :root{
+  :root {
     --bg: #F4F1EA;
     --ink: #1F2430;
     --ink-soft: #5B5F6B;
@@ -17,277 +17,178 @@
     --card: #FFFFFF;
   }
 
-  *{ box-sizing:border-box; margin:0; padding:0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Inter', sans-serif;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
-  .topbar{
-    width:100%;
-    display:flex;
-    justify-content:flex-end;
-    padding:1.25rem 2rem;
-    font-size:13px;
-    color:var(--ink-soft);
+  /* Панель браузера */
+  .browser-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
   }
 
-  .topbar span{ cursor:default; }
-
-  main{
-    flex:1;
-    width:100%;
-    max-width:640px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    padding:2rem 1.5rem 4rem;
+  .nav-btn {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all 0.15s ease;
   }
 
-  .mark{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin-bottom:2.75rem;
+  .nav-btn:hover {
+    background: var(--bg);
+    color: var(--ink);
   }
 
-  .needle{
-    width:34px; height:34px;
-    flex-shrink:0;
+  .address-form {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 16px;
   }
 
-  .wordmark{
-    font-family:'Fraunces', serif;
-    font-weight:500;
-    font-size:34px;
-    letter-spacing:-0.5px;
-    color:var(--indigo);
+  .address-form input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--ink);
   }
 
-  .wordmark em{
-    font-style:italic;
-    color:var(--coral);
+  .quick-bookmarks {
+    display: flex;
+    gap: 8px;
   }
 
-  form{
-    width:100%;
+  .bm-btn {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+    text-decoration: none;
   }
 
-  .search-row{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:999px;
-    padding:14px 22px;
-    transition:border-color .15s ease, box-shadow .15s ease;
+  .bm-btn:hover {
+    border-color: var(--indigo);
+    color: var(--indigo);
   }
 
-  .search-row:focus-within{
-    border-color:var(--indigo);
-    box-shadow:0 0 0 3px rgba(51,57,92,0.08);
+  /* Рабочая область с фреймом */
+  .viewport-container {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
   }
 
-  .search-row svg{ flex-shrink:0; color:var(--ink-soft); }
-
-  input[type="text"]{
-    flex:1;
-    border:none;
-    outline:none;
-    background:transparent;
-    font-family:'Inter', sans-serif;
-    font-size:16px;
-    color:var(--ink);
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
   }
 
-  input[type="text"]::placeholder{ color:#A8A49A; }
-
-  .clear-btn{
-    background:none;
-    border:none;
-    cursor:pointer;
-    color:var(--ink-soft);
-    display:none;
-    padding:2px;
-  }
-  .clear-btn.show{ display:flex; }
-
-  .error{
-    color:var(--coral);
-    font-size:13px;
-    margin-top:8px;
-    padding-left:6px;
-    display:none;
-  }
-  .error.show{ display:block; }
-
-  .engines{
-    display:flex;
-    gap:8px;
-    margin-top:1.75rem;
-    flex-wrap:wrap;
-    justify-content:center;
-  }
-
-  .engine-btn{
-    font-family:'Inter', sans-serif;
-    font-size:14px;
-    font-weight:500;
-    padding:9px 18px;
-    border-radius:999px;
-    border:1px solid var(--line);
-    background:var(--card);
-    color:var(--ink);
-    cursor:pointer;
-    transition:all .15s ease;
-  }
-
-  .engine-btn:hover{
-    border-color:var(--ink-soft);
-  }
-
-  .engine-btn.active{
-    background:var(--indigo);
-    border-color:var(--indigo);
-    color:#F4F1EA;
-  }
-
-  .go-btn{
-    width:100%;
-    margin-top:1.25rem;
-    padding:14px;
-    border-radius:999px;
-    border:none;
-    background:var(--coral);
-    color:#FFF6EF;
-    font-family:'Inter', sans-serif;
-    font-size:15px;
-    font-weight:600;
-    cursor:pointer;
-    transition:transform .12s ease, background .15s ease;
-  }
-
-  .go-btn:hover{ background:#A94A25; }
-  .go-btn:active{ transform:scale(0.98); }
-
-  .hint{
-    margin-top:2rem;
-    font-size:13px;
-    color:var(--ink-soft);
-    text-align:center;
-    line-height:1.6;
-    max-width:420px;
-  }
-
-  footer{
-    padding:1.5rem;
-    font-size:12px;
-    color:#A8A49A;
-  }
-
-  @media (max-width:480px){
-    .wordmark{ font-size:28px; }
-    .needle{ width:28px; height:28px; }
+  .notice {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(31, 36, 48, 0.85);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    pointer-events: none;
+    opacity: 0.9;
   }
 </style>
 </head>
 <body>
 
-  <div class="topbar"><span>локальное веб-приложение</span></div>
-
-  <main>
-    <div class="mark">
-      <svg class="needle" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="17" cy="17" r="15.5" stroke="#33395C" stroke-width="1.5"/>
-        <path d="M17 6L21 17L17 28L13 17L17 6Z" fill="#C4592F"/>
-        <circle cx="17" cy="17" r="2" fill="#33395C"/>
-      </svg>
-      <div class="wordmark">Комп<em>а</em>с</div>
-    </div>
-
-    <form id="searchForm">
-      <div class="search-row">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input id="q" type="text" placeholder="Что ищем в интернете?" autocomplete="off" />
-        <button type="button" class="clear-btn" id="clearBtn" aria-label="Очистить">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-      </div>
-      <p class="error" id="errMsg">Сначала введите запрос.</p>
-
-      <div class="engines" role="group" aria-label="Выбор поисковика">
-        <button type="button" class="engine-btn active" data-engine="google">Google</button>
-        <button type="button" class="engine-btn" data-engine="yandex">Яндекс</button>
-        <button type="button" class="engine-btn" data-engine="duckduckgo">DuckDuckGo</button>
-        <button type="button" class="engine-btn" data-engine="bing">Bing</button>
-      </div>
-
-      <button type="submit" class="go-btn">Искать в интернете</button>
+  <header class="browser-toolbar">
+    <button class="nav-btn" id="reloadBtn" title="Обновить">↻</button>
+    
+    <form class="address-form" id="browserForm">
+      <input id="urlInput" type="text" placeholder="Введите URL или поисковый запрос..." autocomplete="off" />
     </form>
 
-    <p class="hint">Запрос откроется на настоящей странице результатов выбранного поисковика в новой вкладке — само приложение не хранит и не обрабатывает ваши поисковые данные.</p>
+    <div class="quick-bookmarks">
+      <button class="bm-btn" data-url="https://mail.google.com/">Gmail</button>
+      <button class="bm-btn" data-url="https://e.mail.ru/">Mail.ru</button>
+      <button class="bm-btn" data-url="https://wikipedia.org">Wikipedia</button>
+    </div>
+  </header>
+
+  <main class="viewport-container">
+    <iframe id="webViewport" src="about:blank"></iframe>
+    <div class="notice">Примечание: Сайты с защитой от встраивания (Gmail, Google) могут заблокировать показ во фрейме.</div>
   </main>
 
-  <footer>Компас · офлайн-страница, поиск выполняется через интернет</footer>
-
 <script>
-  const form = document.getElementById('searchForm');
-  const input = document.getElementById('q');
-  const clearBtn = document.getElementById('clearBtn');
-  const errMsg = document.getElementById('errMsg');
-  const engineBtns = document.querySelectorAll('.engine-btn');
-  let engine = 'google';
+  const form = document.getElementById('browserForm');
+  const input = document.getElementById('urlInput');
+  const iframe = document.getElementById('webViewport');
+  const reloadBtn = document.getElementById('reloadBtn');
+  const bmBtns = document.querySelectorAll('.bm-btn');
 
-  const engineUrls = {
-    google: q => 'https://www.google.com/search?q=' + encodeURIComponent(q),
-    yandex: q => 'https://yandex.ru/search/?text=' + encodeURIComponent(q),
-    duckduckgo: q => 'https://duckduckgo.com/?q=' + encodeURIComponent(q),
-    bing: q => 'https://www.bing.com/search?q=' + encodeURIComponent(q)
-  };
+  function navigateTo(query) {
+    let url = query.trim();
+    if (!url) return;
 
-  engineBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      engineBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      engine = btn.dataset.engine;
-    });
-  });
+    // Проверяем, введен ли валидный URL или поисковый запрос
+    if (!/^https?:\/\//i.test(url)) {
+      if (url.includes('.') && !url.includes(' ')) {
+        url = 'https://' + url;
+      } else {
+        // Если это запрос, ищем через DuckDuckGo (он менее строг к встроенным ссылкам)
+        url = 'https://duckduckgo.com/?q=' + encodeURIComponent(url);
+      }
+    }
 
-  input.addEventListener('input', () => {
-    clearBtn.classList.toggle('show', input.value.length > 0);
-    if(input.value.trim()) errMsg.classList.remove('show');
-  });
-
-  clearBtn.addEventListener('click', () => {
-    input.value = '';
-    clearBtn.classList.remove('show');
-    input.focus();
-  });
+    input.value = url;
+    iframe.src = url;
+  }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const val = input.value.trim();
-    if(!val){
-      errMsg.classList.add('show');
-      return;
-    }
-    errMsg.classList.remove('show');
-    const url = engineUrls[engine](val);
-    const link = document.createElement('a');
-    link.href = url;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    navigateTo(input.value);
+  });
+
+  reloadBtn.addEventListener('click', () => {
+    iframe.src = iframe.src;
+  });
+
+  bmBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetUrl = btn.dataset.url;
+      navigateTo(targetUrl);
+    });
   });
 </script>
 

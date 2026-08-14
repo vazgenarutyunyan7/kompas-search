@@ -257,10 +257,10 @@
   </nav>
 
 <script>
-  // 1. НАВИГАЦИЯ МЕЖДУ ВКЛАДКАМИ (РАБОТАЕТ ВСЕГДА В ПЕРВУЮ ОЧЕРЕДЬ)
+  // 1. НАВИГАЦИЯ МЕЖДУ ВКЛАДКАМИ
   const navItems = document.querySelectorAll('.nav-item');
   const pageSections = document.querySelectorAll('.page-section');
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2ZXRrcm90Z3Jpb2NydnV5bG50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MTQ4ODQsImV4cCI6MjEwMjI5MDg4NH0.1hKNtw5wg57---dUPROR-YvSgQv79MTbPCVSIj-szxE';
+
   navItems.forEach(item => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
@@ -276,14 +276,13 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
   // 2. ИНИЦИАЛИЗАЦИЯ SUPABASE
   const SUPABASE_URL = 'https://tvetkrotgriocrvuyint.supabase.co';
-  // Вставьте ниже весь скопированный длинный ключ anon public
-  const SUPABASE_KEY = 'ВСТАВЬТЕ_СЮДА_ВАШ_КЛЮЧ'; 
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2ZXRrcm90Z3Jpb2NydnV5bG50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MTQ4ODQsImV4cCI6MjEwMjI5MDg4NH0.1hKNtw5wg57---dUPROR-YvSgQv79MTbPCVSIj-szxE';
 
   let sbClient = null;
   let currentUser = null;
 
   try {
-    if (window.supabase && SUPABASE_KEY !== 'ВСТАВЬТЕ_СЮДА_ВАШ_КЛЮЧ') {
+    if (window.supabase) {
       sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       checkUser();
     }
@@ -307,7 +306,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
     const password = document.getElementById('passwordInput').value;
     const status = document.getElementById('authStatus');
 
-    if (!sbClient) { status.innerText = 'Укажите ключ Supabase в коде!'; return; }
+    if (!sbClient) { status.innerText = 'Ошибка подключения к Supabase!'; return; }
     if (!email || !password) { status.innerText = 'Заполните все поля!'; return; }
 
     const { data, error } = await sbClient.auth.signUp({ email, password });
@@ -329,7 +328,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
     const password = document.getElementById('passwordInput').value;
     const status = document.getElementById('authStatus');
 
-    if (!sbClient) { status.innerText = 'Укажите ключ Supabase в коде!'; return; }
+    if (!sbClient) { status.innerText = 'Ошибка подключения к Supabase!'; return; }
 
     const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
     if (error) {

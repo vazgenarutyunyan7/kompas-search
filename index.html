@@ -282,21 +282,19 @@
   </nav>
 
 <script>
- // Подключение к вашей базе Supabase
-const SUPABASE_URL = 'https://tvetkrotgriocrvuyInt.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2ZXRrcm90Z3Jpb2NydnV5bG50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MTQ4ODQsImV4cCI6MjEwMjI5MDg4NH0.1hKNtw5wg57---dUPROR-YvSgQv79MTbPCVSIj-szxE';
+ // Инициализация Supabase с защитой от ошибок
+const SUPABASE_URL = 'https://tvetkrotgriocrvuyint.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2ZXRrcm90Z3Jpb2NydnV5bG50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MTQ4ODQsImV4cCI6MjEwMjI5MDg4NH0.1hKNtw5wg57---dUPROR-YvSgQv79MTbPCVSIj-szxE
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  navItems.forEach(item => {
-    item.addEventListener('click', () => {
-      navItems.forEach(i => i.classList.remove('active'));
-      pageSections.forEach(s => s.classList.remove('active'));
+let supabase = null;
 
-      item.classList.add('active');
-      document.getElementById(item.dataset.target).classList.add('active');
-    });
-  });
-
+try {
+  if (typeof window.supabase !== 'undefined') {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch (err) {
+  console.error("Ошибка инициализации Supabase:", err);
+}
   // Поиск и сохранение в историю
   const form = document.getElementById('searchForm');
   const input = document.getElementById('q');

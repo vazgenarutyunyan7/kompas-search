@@ -115,8 +115,51 @@
     background:var(--indigo); border-color:var(--indigo); color:#F4F1EA;
   }
 
+  /* Стили для кнопок ИИ */
+  .ai-section {
+    width: 100%;
+    margin-top: 1.25rem;
+  }
+
+  .ai-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+
+  .ai-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content:center;
+  }
+
+  .ai-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 15px;
+    border-radius: 999px;
+    border: 1px solid var(--coral);
+    background: #FFF6EF;
+    color: var(--coral);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .ai-btn:hover {
+    background: var(--coral);
+    color: #FFF6EF;
+  }
+
   .go-btn{
-    width:100%; margin-top:1rem; padding:13px;
+    width:100%; margin-top:1.25rem; padding:13px;
     border-radius:999px; border:none; background:var(--coral);
     color:#FFF6EF; font-family:'Inter', sans-serif;
     font-size:15px; font-weight:600; cursor:pointer;
@@ -193,6 +236,16 @@
           <button type="button" class="engine-btn" data-engine="yandex">Яндекс</button>
           <button type="button" class="engine-btn" data-engine="duckduckgo">DuckDuckGo</button>
           <button type="button" class="engine-btn" data-engine="bing">Bing</button>
+        </div>
+
+        <div class="ai-section">
+          <div class="ai-title">Нейросети и ИИ</div>
+          <div class="ai-buttons">
+            <a href="https://chatgpt.com" target="_blank" class="ai-btn">ChatGPT</a>
+            <a href="https://gemini.google.com" target="_blank" class="ai-btn">Gemini</a>
+            <a href="https://copilot.microsoft.com" target="_blank" class="ai-btn">Copilot</a>
+            <a href="https://claude.ai" target="_blank" class="ai-btn">Claude</a>
+          </div>
         </div>
 
         <button type="submit" class="go-btn">Искать / Перейти</button>

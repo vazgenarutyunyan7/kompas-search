@@ -7,9 +7,9 @@
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#33395C">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 34'><circle cx='17' cy='17' r='15.5' stroke='%2333395C' stroke-width='1.5' fill='%23F4F1EA'/><path d='M17 6L21 17L17 28L13 17L17 6Z' fill='%23C4592F'/><circle cx='17' cy='17' r='2' fill='%2333395C'/></svg>">
 
 <style>
-  /* 2. СТИЛИ СТРАНИЦЫ (CSS) */
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
 
   :root{
@@ -81,9 +81,7 @@
     color:var(--coral);
   }
 
-  form{
-    width:100%;
-  }
+  form{ width:100%; }
 
   .search-row{
     display:flex;
@@ -155,9 +153,7 @@
     transition:all .15s ease;
   }
 
-  .engine-btn:hover{
-    border-color:var(--ink-soft);
-  }
+  .engine-btn:hover{ border-color:var(--ink-soft); }
 
   .engine-btn.active{
     background:var(--indigo);
@@ -183,6 +179,36 @@
   .go-btn:hover{ background:#A94A25; }
   .go-btn:active{ transform:scale(0.98); }
 
+  /* Блок быстрых закладок */
+  .quick-links {
+    display: flex;
+    gap: 12px;
+    margin-top: 1.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .bookmark-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    text-decoration: none;
+    transition: all .15s ease;
+  }
+
+  .bookmark-btn:hover {
+    border-color: var(--indigo);
+    transform: translateY(-1px);
+  }
+
   .hint{
     margin-top:2rem;
     font-size:13px;
@@ -206,7 +232,7 @@
 </head>
 <body>
 
-  <div class="topbar"><span>локальное веб-приложение</span></div>
+  <div class="topbar"><span>веб-приложение Компас</span></div>
 
   <main>
     <div class="mark">
@@ -237,6 +263,13 @@
 
       <button type="submit" class="go-btn">Перейти / Искать</button>
     </form>
+
+    <div class="quick-links">
+      <a href="https://mail.google.com" target="_blank" rel="noopener" class="bookmark-btn">✉️ Gmail</a>
+      <a href="https://e.mail.ru" target="_blank" rel="noopener" class="bookmark-btn">📬 Mail.ru</a>
+      <a href="https://mail.yandex.ru" target="_blank" rel="noopener" class="bookmark-btn">🟡 Яндекс Почта</a>
+      <a href="https://youtube.com" target="_blank" rel="noopener" class="bookmark-btn">▶️ YouTube</a>
+    </div>
 
     <p class="hint">Введите запрос для поиска или прямой URL (например: mail.ru), чтобы перейти сразу на сайт в новой вкладке.</p>
   </main>
@@ -303,7 +336,6 @@
 
     errMsg.classList.remove('show');
 
-    // Проверка: это слова или ссылка
     const isSearchQuery = val.includes(' ') || !val.includes('.');
 
     let targetUrl;

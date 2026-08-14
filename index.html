@@ -10,8 +10,6 @@
 <meta name="theme-color" content="#33395C">
 <link rel="icon" type="image/png" href="icon.png">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
 
@@ -90,7 +88,7 @@
 
   .search-row svg{ flex-shrink:0; color:var(--ink-soft); }
 
-  input[type="text"], input[type="email"], input[type="password"]{
+  input[type="text"]{
     flex:1; border:none; outline:none;
     background:transparent; font-family:'Inter', sans-serif;
     font-size:16px; color:var(--ink);
@@ -144,16 +142,9 @@
   }
 
   .notes-area {
-    width: 100%; height: 180px; border: 1px solid var(--line);
+    width: 100%; height: 220px; border: 1px solid var(--line);
     border-radius: 12px; padding: 12px; font-family: 'Inter', sans-serif;
     font-size: 14px; resize: none; outline: none; background: var(--bg);
-  }
-
-  .profile-box { text-align: center; }
-  .input-field {
-    width: 100%; padding: 12px 14px; border: 1px solid var(--line);
-    border-radius: 12px; margin-bottom: 10px; font-size: 14px; outline: none;
-    background: var(--bg);
   }
 
   /* Нижняя панель */
@@ -166,14 +157,13 @@
   .nav-item {
     display: flex; flex-direction: column; align-items: center; gap: 3px;
     background: none; border: none; color: var(--ink-soft);
-    font-size: 11px; font-weight: 500; cursor: pointer; width: 25%;
+    font-size: 11px; font-weight: 500; cursor: pointer; width: 33.33%;
     padding: 8px 0;
   }
 
   .nav-item.active { color: var(--coral); font-weight: 600; }
   .nav-icon { font-size: 20px; pointer-events: none; }
   .nav-item span { pointer-events: none; }
-  .status-msg { font-size: 13px; color: var(--coral); margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -221,29 +211,9 @@
 
     <div class="page-section" id="sec-notes">
       <div class="card-box">
-        <h3>Облачные заметки</h3>
-        <p id="syncStatus" style="font-size:12px; color:var(--ink-soft); margin-bottom:10px;">Войдите в аккаунт для синхронизации</p>
+        <h3>Мои заметки</h3>
+        <p style="font-size:12px; color:var(--ink-soft); margin-bottom:10px;">Сохраняются локально на вашем устройстве</p>
         <textarea class="notes-area" id="notesInput" placeholder="Введите ваш текст..."></textarea>
-      </div>
-    </div>
-
-    <div class="page-section" id="sec-profile">
-      <div class="card-box profile-box" id="authBox">
-        <h3 id="authTitle">Вход в аккаунт</h3>
-        <p style="font-size:13px; color:var(--ink-soft); margin:10px 0 15px;">Синхронизируйте заметки на всех устройствах</p>
-        
-        <input type="email" id="emailInput" class="input-field" placeholder="Ваш Email" />
-        <input type="password" id="passwordInput" class="input-field" placeholder="Пароль" />
-        
-        <button class="go-btn" id="loginBtn">Войти</button>
-        <button class="engine-btn" id="registerBtn" style="width:100%; margin-top:8px;">Зарегистрироваться</button>
-        <p class="status-msg" id="authStatus"></p>
-      </div>
-
-      <div class="card-box profile-box" id="userBox" style="display:none;">
-        <h3>Вы вошли!</h3>
-        <p id="userEmail" style="font-size:14px; color:var(--indigo); margin:10px 0; font-weight:600;"></p>
-        <button class="go-btn" id="logoutBtn" style="background:var(--indigo);">Выйти из аккаунта</button>
       </div>
     </div>
 
@@ -253,11 +223,10 @@
     <button type="button" class="nav-item active" data-target="sec-home"><span class="nav-icon">🏠</span><span>Главное</span></button>
     <button type="button" class="nav-item" data-target="sec-history"><span class="nav-icon">🕒</span><span>История</span></button>
     <button type="button" class="nav-item" data-target="sec-notes"><span class="nav-icon">📝</span><span>Заметки</span></button>
-    <button type="button" class="nav-item" data-target="sec-profile"><span class="nav-icon">👤</span><span>Профиль</span></button>
   </nav>
 
 <script>
-  // 1. НАВИГАЦИЯ МЕЖДУ ВКЛАДКАМИ
+  // Навигация по вкладкам
   const navItems = document.querySelectorAll('.nav-item');
   const pageSections = document.querySelectorAll('.page-section');
 
@@ -274,110 +243,14 @@
     });
   });
 
-  // 2. ИНИЦИАЛИЗАЦИЯ SUPABASE
-  const SUPABASE_URL = 'https://tvetkrotgriocrvuyint.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2ZXRrcm90Z3Jpb2NydnV5bG50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MTQ4ODQsImV4cCI6MjEwMjI5MDg4NH0.1hKNtw5wg57---dUPROR-YvSgQv79MTbPCVSIj-szxE';
-
-  let sbClient = null;
-  let currentUser = null;
-
-  try {
-    if (window.supabase) {
-      sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      checkUser();
-    }
-  } catch(e) {
-    console.log("Supabase error:", e);
-  }
-
-  async function checkUser() {
-    if (!sbClient) return;
-    const { data: { user } } = await sbClient.auth.getUser();
-    if (user) {
-      currentUser = user;
-      showUserProfile(user.email);
-      loadCloudNotes();
-    }
-  }
-
-  // 3. АВТОРИЗАЦИЯ И РЕГИСТРАЦИЯ
-  document.getElementById('registerBtn').addEventListener('click', async () => {
-    const email = document.getElementById('emailInput').value;
-    const password = document.getElementById('passwordInput').value;
-    const status = document.getElementById('authStatus');
-
-    if (!sbClient) { status.innerText = 'Ошибка подключения к Supabase!'; return; }
-    if (!email || !password) { status.innerText = 'Заполните все поля!'; return; }
-
-    const { data, error } = await sbClient.auth.signUp({ email, password });
-    if (error) {
-      status.style.color = 'var(--coral)';
-      status.innerText = error.message;
-    } else {
-      status.style.color = 'green';
-      status.innerText = 'Регистрация успешна!';
-      if(data.user) {
-        currentUser = data.user;
-        showUserProfile(email);
-      }
-    }
-  });
-
-  document.getElementById('loginBtn').addEventListener('click', async () => {
-    const email = document.getElementById('emailInput').value;
-    const password = document.getElementById('passwordInput').value;
-    const status = document.getElementById('authStatus');
-
-    if (!sbClient) { status.innerText = 'Ошибка подключения к Supabase!'; return; }
-
-    const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
-    if (error) {
-      status.style.color = 'var(--coral)';
-      status.innerText = 'Ошибка: ' + error.message;
-    } else {
-      currentUser = data.user;
-      showUserProfile(data.user.email);
-      loadCloudNotes();
-    }
-  });
-
-  document.getElementById('logoutBtn').addEventListener('click', async () => {
-    if (sbClient) await sbClient.auth.signOut();
-    currentUser = null;
-    document.getElementById('authBox').style.display = 'block';
-    document.getElementById('userBox').style.display = 'none';
-    document.getElementById('syncStatus').innerText = 'Войдите в аккаунт для синхронизации';
-  });
-
-  function showUserProfile(email) {
-    document.getElementById('authBox').style.display = 'none';
-    document.getElementById('userBox').style.display = 'block';
-    document.getElementById('userEmail').innerText = email;
-    document.getElementById('syncStatus').innerText = '🟢 Облачные заметки синхронизированы';
-  }
-
-  // 4. ЗАМЕТКИ
+  // Заметки (хранение в памяти браузера)
   const notesArea = document.getElementById('notesInput');
   notesArea.value = localStorage.getItem('compass_notes') || '';
-
   notesArea.addEventListener('input', () => {
     localStorage.setItem('compass_notes', notesArea.value);
-    if (currentUser && sbClient) saveCloudNotes(notesArea.value);
   });
 
-  async function saveCloudNotes(content) {
-    await sbClient.from('notes').upsert({ user_id: currentUser.id, content: content });
-  }
-
-  async function loadCloudNotes() {
-    const { data } = await sbClient.from('notes').select('content').eq('user_id', currentUser.id).single();
-    if (data && data.content) {
-      notesArea.value = data.content;
-      localStorage.setItem('compass_notes', data.content);
-    }
-  }
-
-  // 5. ПОИСК И ИСТОРИЯ
+  // Поиск и поисковые системы
   const form = document.getElementById('searchForm');
   const input = document.getElementById('q');
   const clearBtn = document.getElementById('clearBtn');

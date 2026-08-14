@@ -1,0 +1,16 @@
+{
+  "short_name": "Компас",
+  "name": "Компас — веб-браузер",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/854/854878.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "background_color": "#F4F1EA",
+  "theme_color": "#33395C",
+  "display": "standalone",
+  "orientation": "any"
+}

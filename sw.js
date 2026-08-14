@@ -1,4 +1,4 @@
-const CACHE_NAME = 'compass-v18';
+const CACHE_NAME = 'compass-v19';
 const urlsToCache = ['./', './index.html', './manifest.json'];
 
 // 1. Установка и мгновенное добавление новых файлов

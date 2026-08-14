@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Компас — поиск в интернете</title>
+<title>Компас — веб-браузер и инструменты</title>
 
+<link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
 <meta name="theme-color" content="#33395C">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 34'><circle cx='17' cy='17' r='15.5' stroke='%2333395C' stroke-width='1.5' fill='%23F4F1EA'/><path d='M17 6L21 17L17 28L13 17L17 6Z' fill='%23C4592F'/><circle cx='17' cy='17' r='2' fill='%2333395C'/></svg>">
+<link rel="icon" type="image/png" href="icon.png">
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
@@ -43,8 +44,6 @@
     color:var(--ink-soft);
   }
 
-  .topbar span{ cursor:default; }
-
   main{
     flex:1;
     width:100%;
@@ -52,21 +51,17 @@
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center;
-    padding:2rem 1.5rem 4rem;
+    padding:1rem 1.5rem 3rem;
   }
 
   .mark{
     display:flex;
     align-items:center;
     gap:14px;
-    margin-bottom:2.75rem;
+    margin-bottom:2rem;
   }
 
-  .needle{
-    width:34px; height:34px;
-    flex-shrink:0;
-  }
+  .needle{ width:34px; height:34px; flex-shrink:0; }
 
   .wordmark{
     font-family:'Fraunces', serif;
@@ -76,10 +71,7 @@
     color:var(--indigo);
   }
 
-  .wordmark em{
-    font-style:italic;
-    color:var(--coral);
-  }
+  .wordmark em{ font-style:italic; color:var(--coral); }
 
   form{ width:100%; }
 
@@ -102,137 +94,116 @@
   .search-row svg{ flex-shrink:0; color:var(--ink-soft); }
 
   input[type="text"]{
-    flex:1;
-    border:none;
-    outline:none;
-    background:transparent;
-    font-family:'Inter', sans-serif;
-    font-size:16px;
-    color:var(--ink);
+    flex:1; border:none; outline:none;
+    background:transparent; font-family:'Inter', sans-serif;
+    font-size:16px; color:var(--ink);
   }
 
   input[type="text"]::placeholder{ color:#A8A49A; }
 
   .clear-btn{
-    background:none;
-    border:none;
-    cursor:pointer;
-    color:var(--ink-soft);
-    display:none;
-    padding:2px;
+    background:none; border:none; cursor:pointer;
+    color:var(--ink-soft); display:none; padding:2px;
   }
   .clear-btn.show{ display:flex; }
 
-  .error{
-    color:var(--coral);
-    font-size:13px;
-    margin-top:8px;
-    padding-left:6px;
-    display:none;
-  }
-  .error.show{ display:block; }
-
   .engines{
-    display:flex;
-    gap:8px;
-    margin-top:1.75rem;
-    flex-wrap:wrap;
-    justify-content:center;
+    display:flex; gap:8px; margin-top:1.25rem;
+    flex-wrap:wrap; justify-content:center;
   }
 
   .engine-btn{
-    font-family:'Inter', sans-serif;
-    font-size:14px;
-    font-weight:500;
-    padding:9px 18px;
-    border-radius:999px;
-    border:1px solid var(--line);
-    background:var(--card);
-    color:var(--ink);
-    cursor:pointer;
-    transition:all .15s ease;
+    font-family:'Inter', sans-serif; font-size:13px; font-weight:500;
+    padding:7px 15px; border-radius:999px; border:1px solid var(--line);
+    background:var(--card); color:var(--ink); cursor:pointer;
   }
 
-  .engine-btn:hover{ border-color:var(--ink-soft); }
-
   .engine-btn.active{
-    background:var(--indigo);
-    border-color:var(--indigo);
-    color:#F4F1EA;
+    background:var(--indigo); border-color:var(--indigo); color:#F4F1EA;
   }
 
   .go-btn{
-    width:100%;
-    margin-top:1.25rem;
-    padding:14px;
-    border-radius:999px;
-    border:none;
-    background:var(--coral);
-    color:#FFF6EF;
-    font-family:'Inter', sans-serif;
-    font-size:15px;
-    font-weight:600;
-    cursor:pointer;
-    transition:transform .12s ease, background .15s ease;
+    width:100%; margin-top:1rem; padding:13px;
+    border-radius:999px; border:none; background:var(--coral);
+    color:#FFF6EF; font-family:'Inter', sans-serif;
+    font-size:15px; font-weight:600; cursor:pointer;
   }
 
-  .go-btn:hover{ background:#A94A25; }
-  .go-btn:active{ transform:scale(0.98); }
-
-  /* Блок быстрых закладок */
-  .quick-links {
-    display: flex;
-    gap: 12px;
-    margin-top: 1.75rem;
-    flex-wrap: wrap;
-    justify-content: center;
+  /* Вкладки встроенных инструментов */
+  .tools-container {
     width: 100%;
+    margin-top: 2rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
   }
 
-  .bookmark-btn {
+  .tabs {
     display: flex;
-    align-items: center;
     gap: 6px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 12px;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
     font-size: 13px;
     font-weight: 500;
-    padding: 8px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    background: var(--card);
-    color: var(--ink);
-    text-decoration: none;
-    transition: all .15s ease;
+    color: var(--ink-soft);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
   }
 
-  .bookmark-btn:hover {
-    border-color: var(--indigo);
-    transform: translateY(-1px);
+  .tab-btn.active {
+    background: var(--bg);
+    color: var(--indigo);
+    font-weight: 600;
   }
 
-  .hint{
-    margin-top:2rem;
-    font-size:13px;
-    color:var(--ink-soft);
-    text-align:center;
-    line-height:1.6;
-    max-width:420px;
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Стили: Погода */
+  .weather-box { text-align: center; padding: 0.5rem 0; }
+  .weather-temp { font-size: 36px; font-weight: 600; color: var(--indigo); margin: 6px 0; }
+  .weather-desc { font-size: 14px; color: var(--ink-soft); }
+
+  /* Стили: Заметки */
+  .notes-area {
+    width: 100%; height: 120px; border: 1px solid var(--line);
+    border-radius: 12px; padding: 10px; font-family: 'Inter', sans-serif;
+    font-size: 14px; resize: none; outline: none; background: var(--bg);
   }
 
-  footer{
-    padding:1.5rem;
-    font-size:12px;
-    color:#A8A49A;
+  /* Стили: Калькулятор */
+  .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
+  .calc-screen {
+    grid-column: span 4; background: var(--bg); border: 1px solid var(--line);
+    border-radius: 8px; padding: 10px; font-size: 20px; text-align: right; margin-bottom: 4px;
+  }
+  .calc-btn {
+    padding: 12px; font-size: 16px; font-weight: 600; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--card); cursor: pointer;
   }
 
-  @media (max-width:480px){
-    .wordmark{ font-size:28px; }
-    .needle{ width:28px; height:28px; }
-  }
+  /* Стили: Таймер */
+  .timer-display { font-size: 32px; font-weight: 600; text-align: center; color: var(--indigo); margin: 10px 0; }
+  .timer-ctrls { display: flex; gap: 8px; justify-content: center; }
+
+  footer{ padding:1.5rem; font-size:12px; color:#A8A49A; }
 </style>
 </head>
 <body>
 
-  <div class="topbar"><span>веб-приложение Компас</span></div>
+  <div class="topbar"><span>приложение Компас</span></div>
 
   <main>
     <div class="mark">
@@ -246,41 +217,82 @@
 
     <form id="searchForm">
       <div class="search-row">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input id="q" type="text" placeholder="Введите слова или URL-адрес..." autocomplete="off" autofocus />
-        <button type="button" class="clear-btn" id="clearBtn" aria-label="Очистить">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input id="q" type="text" placeholder="Поиск в сети или URL..." autocomplete="off" autofocus />
+        <button type="button" class="clear-btn" id="clearBtn">✕</button>
       </div>
-      <p class="error" id="errMsg">Сначала введите запрос или URL.</p>
 
-      <div class="engines" role="group" aria-label="Выбор поисковика">
+      <div class="engines">
         <button type="button" class="engine-btn" data-engine="google">Google</button>
         <button type="button" class="engine-btn" data-engine="yandex">Яндекс</button>
         <button type="button" class="engine-btn" data-engine="duckduckgo">DuckDuckGo</button>
         <button type="button" class="engine-btn" data-engine="bing">Bing</button>
       </div>
 
-      <button type="submit" class="go-btn">Перейти / Искать</button>
+      <button type="submit" class="go-btn">Искать / Перейти</button>
     </form>
 
-    <div class="quick-links">
-      <a href="https://mail.google.com" target="_blank" rel="noopener" class="bookmark-btn">✉️ Gmail</a>
-      <a href="https://e.mail.ru" target="_blank" rel="noopener" class="bookmark-btn">📬 Mail.ru</a>
-      <a href="https://mail.yandex.ru" target="_blank" rel="noopener" class="bookmark-btn">🟡 Яндекс Почта</a>
-      <a href="https://youtube.com" target="_blank" rel="noopener" class="bookmark-btn">▶️ YouTube</a>
+    <div class="tools-container">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="weather">☀️ Погода</button>
+        <button class="tab-btn" data-tab="notes">📝 Заметки</button>
+        <button class="tab-btn" data-tab="calc">🧮 Калькулятор</button>
+        <button class="tab-btn" data-tab="timer">⏱️ Таймер</button>
+      </div>
+
+      <div class="tab-content active" id="tab-weather">
+        <div class="weather-box">
+          <div class="weather-desc" id="weatherCity">Загрузка погоды...</div>
+          <div class="weather-temp" id="weatherTemp">--°C</div>
+          <div class="weather-desc" id="weatherState">Подождите момент</div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-notes">
+        <textarea class="notes-area" id="notesInput" placeholder="Напишите что-то... Заметка сохранится автоматически!"></textarea>
+      </div>
+
+      <div class="tab-content" id="tab-calc">
+        <div class="calc-screen" id="calcScreen">0</div>
+        <div class="calc-grid">
+          <button class="calc-btn" onclick="calcInput('C')">C</button>
+          <button class="calc-btn" onclick="calcInput('/')">/</button>
+          <button class="calc-btn" onclick="calcInput('*')">×</button>
+          <button class="calc-btn" onclick="calcInput('-')">-</button>
+          <button class="calc-btn" onclick="calcInput('7')">7</button>
+          <button class="calc-btn" onclick="calcInput('8')">8</button>
+          <button class="calc-btn" onclick="calcInput('9')">9</button>
+          <button class="calc-btn" onclick="calcInput('+')">+</button>
+          <button class="calc-btn" onclick="calcInput('4')">4</button>
+          <button class="calc-btn" onclick="calcInput('5')">5</button>
+          <button class="calc-btn" onclick="calcInput('6')">6</button>
+          <button class="calc-btn" onclick="calcInput('=')">=</button>
+          <button class="calc-btn" onclick="calcInput('1')">1</button>
+          <button class="calc-btn" onclick="calcInput('2')">2</button>
+          <button class="calc-btn" onclick="calcInput('3')">3</button>
+          <button class="calc-btn" onclick="calcInput('0')">0</button>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-timer">
+        <div class="timer-display" id="timerDisplay">05:00</div>
+        <div class="timer-ctrls">
+          <button class="engine-btn" onclick="startTimer(300)">5 мин</button>
+          <button class="engine-btn" onclick="startTimer(600)">10 мин</button>
+          <button class="engine-btn" onclick="resetTimer()">Сброс</button>
+        </div>
+      </div>
     </div>
 
-    <p class="hint">Введите запрос для поиска или прямой URL (например: mail.ru), чтобы перейти сразу на сайт в новой вкладке.</p>
   </main>
 
-  <footer>Компас · офлайн-страница, поиск выполняется через интернет</footer>
+  <footer>Компас · Автономное PWA приложение</footer>
 
 <script>
+  // Поиск и форма
   const form = document.getElementById('searchForm');
   const input = document.getElementById('q');
   const clearBtn = document.getElementById('clearBtn');
-  const errMsg = document.getElementById('errMsg');
   const engineBtns = document.querySelectorAll('.engine-btn');
 
   const engineUrls = {
@@ -295,69 +307,98 @@
   function setActiveEngine(targetEngine) {
     engine = targetEngine;
     localStorage.setItem('selectedEngine', engine);
-    engineBtns.forEach(b => {
-      b.classList.toggle('active', b.dataset.engine === engine);
-    });
+    engineBtns.forEach(b => b.classList.toggle('active', b.dataset.engine === engine));
   }
-
   setActiveEngine(engine);
 
-  engineBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      setActiveEngine(btn.dataset.engine);
-    });
-  });
+  engineBtns.forEach(btn => btn.addEventListener('click', () => setActiveEngine(btn.dataset.engine)));
 
-  input.addEventListener('input', () => {
-    clearBtn.classList.toggle('show', input.value.length > 0);
-    if (input.value.trim()) errMsg.classList.remove('show');
-  });
-
-  function clearInput() {
-    input.value = '';
-    clearBtn.classList.remove('show');
-    input.focus();
-  }
-
-  clearBtn.addEventListener('click', clearInput);
-
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') clearInput();
-  });
+  input.addEventListener('input', () => clearBtn.classList.toggle('show', input.value.length > 0));
+  clearBtn.addEventListener('click', () => { input.value = ''; clearBtn.classList.remove('show'); input.focus(); });
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const val = input.value.trim();
-
-    if (!val) {
-      errMsg.classList.add('show');
-      return;
-    }
-
-    errMsg.classList.remove('show');
-
+    if (!val) return;
     const isSearchQuery = val.includes(' ') || !val.includes('.');
-
-    let targetUrl;
-    if (isSearchQuery) {
-      targetUrl = engineUrls[engine](val);
-    } else {
-      targetUrl = /^https?:\/\//i.test(val) ? val : 'https://' + val;
-    }
-
-    window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    const targetUrl = isSearchQuery ? engineUrls[engine](val) : (/^https?:\/\//i.test(val) ? val : 'https://' + val);
+    window.open(targetUrl, '_blank');
   });
+
+  // Логика вкладок
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // 1. Погода (через бесплатный API)
+  async function fetchWeather() {
+    try {
+      const res = await fetch('https://wttr.in/?format=j1');
+      const data = await res.json();
+      const current = data.current_condition[0];
+      const area = data.nearest_area[0].areaName[0].value;
+      document.getElementById('weatherCity').innerText = area;
+      document.getElementById('weatherTemp').innerText = `${current.temp_C}°C`;
+      document.getElementById('weatherState').innerText = current.lang_ru ? current.lang_ru[0].value : current.weatherDesc[0].value;
+    } catch {
+      document.getElementById('weatherCity').innerText = "Москва (по умолчанию)";
+      document.getElementById('weatherTemp').innerText = "+20°C";
+      document.getElementById('weatherState').innerText = "Ясно";
+    }
+  }
+  fetchWeather();
+
+  // 2. Автосохранение заметок
+  const notesArea = document.getElementById('notesInput');
+  notesArea.value = localStorage.getItem('compass_notes') || '';
+  notesArea.addEventListener('input', () => localStorage.setItem('compass_notes', notesArea.value));
+
+  // 3. Калькулятор
+  let calcExpr = '';
+  function calcInput(val) {
+    const screen = document.getElementById('calcScreen');
+    if (val === 'C') { calcExpr = ''; screen.innerText = '0'; }
+    else if (val === '=') {
+      try { calcExpr = eval(calcExpr).toString(); screen.innerText = calcExpr; }
+      catch { screen.innerText = 'Ошибка'; calcExpr = ''; }
+    } else {
+      calcExpr += val; screen.innerText = calcExpr;
+    }
+  }
+
+  // 4. Таймер
+  let timerInterval;
+  function startTimer(seconds) {
+    clearInterval(timerInterval);
+    let left = seconds;
+    const display = document.getElementById('timerDisplay');
+    
+    timerInterval = setInterval(() => {
+      const m = String(Math.floor(left / 60)).padStart(2, '0');
+      const s = String(left % 60).padStart(2, '0');
+      display.innerText = `${m}:${s}`;
+      if (left <= 0) { clearInterval(timerInterval); alert('Время вышло!'); }
+      left--;
+    }, 1000);
+  }
+  function resetTimer() {
+    clearInterval(timerInterval);
+    document.getElementById('timerDisplay').innerText = "05:00";
+  }
 </script>
 
 <script>
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(() => console.log('ServiceWorker успешно зарегистрирован'))
-        .catch(err => console.log('Ошибка ServiceWorker:', err));
-    });
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
   }
 </script>
-
 </body>
 </html>

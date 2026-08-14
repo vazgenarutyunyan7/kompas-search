@@ -282,10 +282,11 @@
   </nav>
 
 <script>
-  // Навигация по вкладкам снизу
-  const navItems = document.querySelectorAll('.nav-item');
-  const pageSections = document.querySelectorAll('.page-section');
+ // Подключение к вашей базе Supabase
+const SUPABASE_URL = 'https://tvetkrotgriocrvuyInt.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2ZXRrcm90Z3Jpb2NydnV5bG50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MTQ4ODQsImV4cCI6MjEwMjI5MDg4NH0.1hKNtw5wg57---dUPROR-YvSgQv79MTbPCVSIj-szxE';
 
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   navItems.forEach(item => {
     item.addEventListener('click', () => {
       navItems.forEach(i => i.classList.remove('active'));

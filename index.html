@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Компас — поиск в интернете</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#33395C">
+
 <style>
+  /* 2. СТИЛИ СТРАНИЦЫ (CSS) */
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
 
   :root{
@@ -252,7 +257,6 @@
     bing: q => 'https://www.bing.com/search?q=' + encodeURIComponent(q)
   };
 
-  // Загружаем сохраненный поисковик или берем Google по умолчанию
   let engine = localStorage.getItem('selectedEngine') || 'google';
 
   function setActiveEngine(targetEngine) {
@@ -299,20 +303,28 @@
 
     errMsg.classList.remove('show');
 
-    // Проверяем: если есть пробелы или нет точки — это поисковые слова
+    // Проверка: это слова или ссылка
     const isSearchQuery = val.includes(' ') || !val.includes('.');
 
     let targetUrl;
     if (isSearchQuery) {
-      // Ищем через выбранный поисковик
       targetUrl = engineUrls[engine](val);
     } else {
-      // Оформляем как URL и переходим напрямую
       targetUrl = /^https?:\/\//i.test(val) ? val : 'https://' + val;
     }
 
     window.open(targetUrl, '_blank', 'noopener,noreferrer');
   });
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('ServiceWorker успешно зарегистрирован'))
+        .catch(err => console.log('Ошибка ServiceWorker:', err));
+    });
+  }
 </script>
 
 </body>

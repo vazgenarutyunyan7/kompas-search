@@ -24,6 +24,7 @@
   }
 
   *{ box-sizing:border-box; margin:0; padding:0; }
+  html, body{ height:100%; }
 
   body{
     background:var(--bg);
@@ -32,188 +33,136 @@
     min-height:100vh;
     display:flex;
     flex-direction:column;
-    align-items:center;
-    padding-bottom: 80px;
+    padding-bottom: 65px;
   }
 
   .topbar{
     width:100%;
     display:flex;
-    justify-content:flex-end;
-    padding:1.25rem 2rem 0.5rem;
-    font-size:13px;
-    color:var(--ink-soft);
-  }
-
-  main{
-    flex:1;
-    width:100%;
-    max-width:640px;
-    display:flex;
-    flex-direction:column;
     align-items:center;
-    padding:1rem 1.5rem 2rem;
+    justify-content:space-between;
+    padding:0.9rem 1.25rem 0.5rem;
   }
 
-  .mark{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin-bottom:1.5rem;
-  }
-
-  .needle{ width:34px; height:34px; flex-shrink:0; }
-
+  .mark{ display:flex; align-items:center; gap:10px; }
+  .needle{ width:26px; height:26px; flex-shrink:0; }
   .wordmark{
-    font-family:'Fraunces', serif;
-    font-weight:500;
-    font-size:34px;
-    letter-spacing:-0.5px;
-    color:var(--indigo);
+    font-family:'Fraunces', serif; font-weight:500; font-size:22px;
+    letter-spacing:-0.4px; color:var(--indigo);
   }
-
   .wordmark em{ font-style:italic; color:var(--coral); }
 
-  form{ width:100%; }
-
-  .search-row{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:999px;
-    padding:14px 22px;
+  /* ---- browser chrome ---- */
+  .toolbar{
+    display:flex; align-items:center; gap:6px;
+    padding: 0 1.25rem 0.6rem;
   }
-
-  .search-row svg{ flex-shrink:0; color:var(--ink-soft); }
-
-  input[type="text"]{
-    flex:1; border:none; outline:none;
-    background:transparent; font-family:'Inter', sans-serif;
-    font-size:16px; color:var(--ink);
+  .tbtn{
+    border:none; background:var(--card); border:1px solid var(--line);
+    width:36px; height:36px; border-radius:10px; font-size:16px;
+    color:var(--ink-soft); cursor:pointer; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
   }
+  .tbtn:disabled{ opacity:0.4; cursor:default; }
+  .tbtn.external{ color:var(--coral); border-color:var(--coral); }
 
+  .address-form{
+    flex:1; min-width:0;
+    display:flex; align-items:center; gap:8px;
+    background:var(--card); border:1px solid var(--line);
+    border-radius:999px; padding:9px 14px;
+  }
+  .address-form svg{ flex-shrink:0; color:var(--ink-soft); }
+  .address-form input{
+    flex:1; min-width:0; border:none; outline:none; background:transparent;
+    font-family:'Inter', sans-serif; font-size:14px; color:var(--ink);
+  }
   .clear-btn{
     background:none; border:none; cursor:pointer;
-    color:var(--ink-soft); display:none; padding:2px;
+    color:var(--ink-soft); display:none; padding:2px; flex-shrink:0;
   }
   .clear-btn.show{ display:flex; }
 
   .engines{
-    display:flex; gap:8px; margin-top:1.25rem;
-    flex-wrap:wrap; justify-content:center;
+    display:flex; gap:8px; padding: 0 1.25rem 0.9rem;
+    flex-wrap:wrap;
   }
-
   .engine-btn{
-    font-family:'Inter', sans-serif; font-size:13px; font-weight:500;
-    padding:7px 15px; border-radius:999px; border:1px solid var(--line);
+    font-family:'Inter', sans-serif; font-size:12px; font-weight:500;
+    padding:6px 13px; border-radius:999px; border:1px solid var(--line);
     background:var(--card); color:var(--ink); cursor:pointer;
   }
+  .engine-btn.active{ background:var(--indigo); border-color:var(--indigo); color:#F4F1EA; }
 
-  .engine-btn.active{
-    background:var(--indigo); border-color:var(--indigo); color:#F4F1EA;
+  main{ flex:1; width:100%; display:flex; flex-direction:column; min-height:0; }
+  .page-section{ display:none; flex:1; min-height:0; flex-direction:column; }
+  .page-section.active{ display:flex; }
+
+  /* ---- start page ---- */
+  .start-page{ flex:1; display:flex; flex-direction:column; align-items:center; padding: 2rem 1.5rem; overflow-y:auto; }
+  .start-page .mark{ margin-bottom:0.4rem; }
+  .start-page .wordmark{ font-size:32px; }
+  .hint{ font-size:13px; color:var(--ink-soft); text-align:center; max-width:420px; margin-top:0.4rem; }
+
+  .banner{
+    width:100%; max-width:480px; background:#FFF6EF; border:1px solid var(--coral);
+    border-radius:14px; padding:12px 14px; font-size:12.5px; color:var(--ink);
+    margin-top:1.25rem; display:flex; gap:10px; align-items:flex-start;
+  }
+  .banner button{ background:none; border:none; color:var(--coral); font-weight:600; cursor:pointer; font-size:12.5px; flex-shrink:0; }
+
+  .ai-section{ width:100%; max-width:480px; margin-top:1.75rem; }
+  .ai-title{
+    font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:8px;
+    text-transform:uppercase; letter-spacing:0.5px; text-align:center;
+  }
+  .ai-buttons{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+  .ai-btn{
+    font-family:'Inter', sans-serif; font-size:13px; font-weight:500;
+    padding:7px 15px; border-radius:999px; border:1px solid var(--coral);
+    background:#FFF6EF; color:var(--coral); cursor:pointer; text-decoration:none;
+    display:inline-block; transition: background 0.2s, color 0.2s;
+  }
+  .ai-btn:hover{ background:var(--coral); color:#FFF6EF; }
+
+  /* ---- browser view ---- */
+  .browser-view{ flex:1; display:none; flex-direction:column; min-height:0; }
+  .browser-view.active{ display:flex; }
+  .frame{ flex:1; width:100%; border:none; background:#fff; }
+
+  /* ---- history / notes ---- */
+  .inner-page{ flex:1; overflow-y:auto; padding: 1.25rem 1.5rem 2rem; display:flex; justify-content:center; }
+  .card-box{ background:var(--card); border:1px solid var(--line); border-radius:20px; padding:1.25rem; width:100%; max-width:520px; height:fit-content; }
+  .history-list{ list-style:none; margin-top:10px; }
+  .history-item{
+    display:flex; justify-content:space-between; align-items:center; gap:8px;
+    padding:10px 0; border-bottom:1px solid var(--line); font-size:14px; cursor:pointer;
+  }
+  .history-item:hover{ color:var(--coral); }
+  .notes-area{
+    width:100%; height:220px; border:1px solid var(--line); border-radius:12px;
+    padding:12px; font-family:'Inter', sans-serif; font-size:14px; resize:none;
+    outline:none; background:var(--bg);
   }
 
-  /* Стили для кнопок ИИ */
-  .ai-section {
-    width: 100%;
-    margin-top: 1.25rem;
+  .bottom-nav{
+    position:fixed; bottom:0; left:0; right:0; height:65px;
+    background:var(--card); border-top:1px solid var(--line);
+    display:flex; justify-content:space-around; align-items:center; z-index:9999;
   }
-
-  .ai-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--ink-soft);
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    text-align: center;
+  .nav-item{
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    background:none; border:none; color:var(--ink-soft);
+    font-size:11px; font-weight:500; cursor:pointer; width:33.33%; padding:8px 0;
   }
-
-  .ai-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content:center;
-  }
-
-  .ai-btn {
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    padding: 7px 15px;
-    border-radius: 999px;
-    border: 1px solid var(--coral);
-    background: #FFF6EF;
-    color: var(--coral);
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  .ai-btn:hover {
-    background: var(--coral);
-    color: #FFF6EF;
-  }
-
-  .go-btn{
-    width:100%; margin-top:1.25rem; padding:13px;
-    border-radius:999px; border:none; background:var(--coral);
-    color:#FFF6EF; font-family:'Inter', sans-serif;
-    font-size:15px; font-weight:600; cursor:pointer;
-  }
-
-  .page-section { display: none; width: 100%; }
-  .page-section.active { display: block; }
-
-  .card-box {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 20px;
-    padding: 1.25rem;
-    margin-top: 1.5rem;
-    width: 100%;
-  }
-
-  .history-list { list-style: none; margin-top: 10px; }
-  .history-item {
-    display: flex; justify-content: space-between;
-    padding: 10px 0; border-bottom: 1px solid var(--line);
-    font-size: 14px;
-  }
-
-  .notes-area {
-    width: 100%; height: 220px; border: 1px solid var(--line);
-    border-radius: 12px; padding: 12px; font-family: 'Inter', sans-serif;
-    font-size: 14px; resize: none; outline: none; background: var(--bg);
-  }
-
-  /* Нижняя панель */
-  .bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0; height: 65px;
-    background: var(--card); border-top: 1px solid var(--line);
-    display: flex; justify-content: space-around; align-items: center; z-index: 9999;
-  }
-
-  .nav-item {
-    display: flex; flex-direction: column; align-items: center; gap: 3px;
-    background: none; border: none; color: var(--ink-soft);
-    font-size: 11px; font-weight: 500; cursor: pointer; width: 33.33%;
-    padding: 8px 0;
-  }
-
-  .nav-item.active { color: var(--coral); font-weight: 600; }
-  .nav-icon { font-size: 20px; pointer-events: none; }
-  .nav-item span { pointer-events: none; }
+  .nav-item.active{ color:var(--coral); font-weight:600; }
+  .nav-icon{ font-size:20px; pointer-events:none; }
+  .nav-item span{ pointer-events:none; }
 </style>
 </head>
 <body>
 
-  <div class="topbar"><span>Компас PWA</span></div>
-
-  <main>
+  <div class="topbar">
     <div class="mark">
       <svg class="needle" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="17" cy="17" r="15.5" stroke="#33395C" stroke-width="1.5"/>
@@ -222,20 +171,37 @@
       </svg>
       <div class="wordmark">Комп<em>а</em>с</div>
     </div>
+  </div>
 
+  <div class="toolbar">
+    <button type="button" class="tbtn" id="btnHome" title="Начальная страница">⌂</button>
+    <button type="button" class="tbtn" id="btnBack" title="Назад">←</button>
+    <button type="button" class="tbtn" id="btnForward" title="Вперёд">→</button>
+    <button type="button" class="tbtn" id="btnReload" title="Обновить">⟳</button>
+    <form id="addressForm" class="address-form">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input id="q" type="text" placeholder="Поиск в сети или адрес сайта" autocomplete="off" />
+      <button type="button" class="clear-btn" id="clearBtn">✕</button>
+    </form>
+    <button type="button" class="tbtn external" id="btnExternal" title="Открыть в браузере">↗</button>
+  </div>
+
+  <div class="engines" id="engineRow">
+    <button type="button" class="engine-btn" data-engine="google">Google</button>
+    <button type="button" class="engine-btn" data-engine="yandex">Яндекс</button>
+    <button type="button" class="engine-btn" data-engine="duckduckgo">DuckDuckGo</button>
+    <button type="button" class="engine-btn" data-engine="bing">Bing</button>
+  </div>
+
+  <main>
     <div class="page-section active" id="sec-home">
-      <form id="searchForm">
-        <div class="search-row">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input id="q" type="text" placeholder="Поиск в сети или URL..." autocomplete="off" />
-          <button type="button" class="clear-btn" id="clearBtn">✕</button>
-        </div>
 
-        <div class="engines">
-          <button type="button" class="engine-btn" data-engine="google">Google</button>
-          <button type="button" class="engine-btn" data-engine="yandex">Яндекс</button>
-          <button type="button" class="engine-btn" data-engine="duckduckgo">DuckDuckGo</button>
-          <button type="button" class="engine-btn" data-engine="bing">Bing</button>
+      <div class="start-page" id="startPage">
+        <div class="hint">Введите запрос или адрес сайта в строке выше — страница откроется прямо здесь, внутри Компаса.</div>
+
+        <div class="banner" id="banner">
+          <span>Некоторые сайты (например, страница поиска Google) запрещают показывать себя внутри приложений и не откроются во фрейме — в этом случае нажмите ↗, чтобы открыть их в обычном браузере.</span>
+          <button type="button" id="bannerClose">Понятно</button>
         </div>
 
         <div class="ai-section">
@@ -247,29 +213,35 @@
             <a href="https://claude.ai" target="_blank" class="ai-btn">Claude</a>
           </div>
         </div>
+      </div>
 
-        <button type="submit" class="go-btn">Искать / Перейти</button>
-      </form>
+      <div class="browser-view" id="browserView">
+        <iframe id="frame" class="frame" name="compass-frame"></iframe>
+      </div>
+
     </div>
 
     <div class="page-section" id="sec-history">
-      <div class="card-box">
-        <h3>История поиска</h3>
-        <ul class="history-list" id="historyList">
-          <li class="history-item"><span>История пуста</span></li>
-        </ul>
-        <button class="engine-btn" style="margin-top:15px; width:100%" id="clearHistoryBtn">Очистить историю</button>
+      <div class="inner-page">
+        <div class="card-box">
+          <h3>История поиска</h3>
+          <ul class="history-list" id="historyList">
+            <li class="history-item"><span>История пуста</span></li>
+          </ul>
+          <button class="engine-btn" style="margin-top:15px; width:100%" id="clearHistoryBtn">Очистить историю</button>
+        </div>
       </div>
     </div>
 
     <div class="page-section" id="sec-notes">
-      <div class="card-box">
-        <h3>Мои заметки</h3>
-        <p style="font-size:12px; color:var(--ink-soft); margin-bottom:10px;">Сохраняются локально на вашем устройстве</p>
-        <textarea class="notes-area" id="notesInput" placeholder="Введите ваш текст..."></textarea>
+      <div class="inner-page">
+        <div class="card-box">
+          <h3>Мои заметки</h3>
+          <p style="font-size:12px; color:var(--ink-soft); margin-bottom:10px;">Сохраняются локально на вашем устройстве</p>
+          <textarea class="notes-area" id="notesInput" placeholder="Введите ваш текст..."></textarea>
+        </div>
       </div>
     </div>
-
   </main>
 
   <nav class="bottom-nav">
@@ -279,89 +251,142 @@
   </nav>
 
 <script>
-  // Навигация по вкладкам
+  // ---------- навигация по нижним вкладкам ----------
   const navItems = document.querySelectorAll('.nav-item');
   const pageSections = document.querySelectorAll('.page-section');
 
+  function showSection(id){
+    navItems.forEach(i => i.classList.toggle('active', i.dataset.target === id));
+    pageSections.forEach(s => s.classList.toggle('active', s.id === id));
+  }
   navItems.forEach(item => {
-    item.addEventListener('click', (e) => {
-      e.preventDefault();
-      const targetId = item.getAttribute('data-target');
-      
-      navItems.forEach(i => i.classList.remove('active'));
-      pageSections.forEach(s => s.classList.remove('active'));
-
-      item.classList.add('active');
-      document.getElementById(targetId).classList.add('active');
-    });
+    item.addEventListener('click', () => showSection(item.dataset.target));
   });
 
-  // Заметки (хранение в памяти браузера)
+  // ---------- заметки ----------
   const notesArea = document.getElementById('notesInput');
   notesArea.value = localStorage.getItem('compass_notes') || '';
   notesArea.addEventListener('input', () => {
     localStorage.setItem('compass_notes', notesArea.value);
   });
 
-  // Поиск и поисковые системы
-  const form = document.getElementById('searchForm');
-  const input = document.getElementById('q');
-  const clearBtn = document.getElementById('clearBtn');
-  const engineBtns = document.querySelectorAll('.engine-btn');
+  // ---------- баннер про X-Frame-Options ----------
+  const banner = document.getElementById('banner');
+  if (localStorage.getItem('compass_banner_dismissed')) banner.style.display = 'none';
+  document.getElementById('bannerClose').addEventListener('click', () => {
+    banner.style.display = 'none';
+    localStorage.setItem('compass_banner_dismissed', '1');
+  });
 
+  // ---------- поисковые системы ----------
   const engineUrls = {
     google: q => 'https://www.google.com/search?q=' + encodeURIComponent(q),
     yandex: q => 'https://yandex.ru/search/?text=' + encodeURIComponent(q),
-    duckduckgo: q => 'https://duckduckgo.com/?q=' + encodeURIComponent(q),
+    duckduckgo: q => 'https://duckduckgo.com/html/?q=' + encodeURIComponent(q),
     bing: q => 'https://www.bing.com/search?q=' + encodeURIComponent(q)
   };
 
-  let engine = localStorage.getItem('selectedEngine') || 'google';
+  const engineBtns = document.querySelectorAll('.engine-btn');
+  let engine = localStorage.getItem('selectedEngine') || 'duckduckgo';
 
-  function setActiveEngine(targetEngine) {
+  function setActiveEngine(targetEngine){
     engine = targetEngine;
     localStorage.setItem('selectedEngine', engine);
-    engineBtns.forEach(b => {
-      if(b.dataset.engine) b.classList.toggle('active', b.dataset.engine === engine);
-    });
+    engineBtns.forEach(b => b.classList.toggle('active', b.dataset.engine === engine));
   }
   setActiveEngine(engine);
+  engineBtns.forEach(btn => btn.addEventListener('click', () => setActiveEngine(btn.dataset.engine)));
 
-  engineBtns.forEach(btn => {
-    if(btn.dataset.engine) {
-      btn.addEventListener('click', () => setActiveEngine(btn.dataset.engine));
-    }
-  });
+  // ---------- браузерная часть ----------
+  const startPage = document.getElementById('startPage');
+  const browserView = document.getElementById('browserView');
+  const frame = document.getElementById('frame');
+  const addressForm = document.getElementById('addressForm');
+  const addressInput = document.getElementById('q');
+  const clearBtn = document.getElementById('clearBtn');
+  const btnHome = document.getElementById('btnHome');
+  const btnBack = document.getElementById('btnBack');
+  const btnForward = document.getElementById('btnForward');
+  const btnReload = document.getElementById('btnReload');
+  const btnExternal = document.getElementById('btnExternal');
 
-  input.addEventListener('input', () => clearBtn.classList.toggle('show', input.value.length > 0));
-  clearBtn.addEventListener('click', () => { input.value = ''; clearBtn.classList.remove('show'); input.focus(); });
+  let currentExternalUrl = null;
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const val = input.value.trim();
-    if (!val) return;
-    saveToHistory(val);
+  function toUrl(val){
     const isSearchQuery = val.includes(' ') || !val.includes('.');
-    const targetUrl = isSearchQuery ? engineUrls[engine](val) : (/^https?:\/\//i.test(val) ? val : 'https://' + val);
-    window.open(targetUrl, '_blank');
+    if (isSearchQuery) return engineUrls[engine](val);
+    return /^https?:\/\//i.test(val) ? val : 'https://' + val;
+  }
+
+  function goToStartPage(){
+    startPage.style.display = 'flex';
+    browserView.classList.remove('active');
+    frame.src = 'about:blank';
+    currentExternalUrl = null;
+    addressInput.value = '';
+    clearBtn.classList.remove('show');
+  }
+
+  function navigate(rawVal){
+    const val = rawVal.trim();
+    if (!val) return;
+    const targetUrl = toUrl(val);
+    currentExternalUrl = targetUrl;
+    startPage.style.display = 'none';
+    browserView.classList.add('active');
+    frame.src = targetUrl;
+    addressInput.value = val;
+    showSection('sec-home');
+    saveToHistory(val);
+  }
+
+  addressForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    navigate(addressInput.value);
   });
 
-  function saveToHistory(query) {
+  addressInput.addEventListener('input', () => clearBtn.classList.toggle('show', addressInput.value.length > 0));
+  clearBtn.addEventListener('click', () => { addressInput.value = ''; clearBtn.classList.remove('show'); addressInput.focus(); });
+
+  btnHome.addEventListener('click', goToStartPage);
+
+  btnBack.addEventListener('click', () => { try { frame.contentWindow.history.back(); } catch (e) {} });
+  btnForward.addEventListener('click', () => { try { frame.contentWindow.history.forward(); } catch (e) {} });
+  btnReload.addEventListener('click', () => {
+    if (!currentExternalUrl) return;
+    const src = frame.src;
+    frame.src = 'about:blank';
+    requestAnimationFrame(() => { frame.src = src; });
+  });
+  btnExternal.addEventListener('click', () => {
+    const url = currentExternalUrl || (addressInput.value ? toUrl(addressInput.value) : null);
+    if (url) window.open(url, '_blank');
+  });
+
+  // ---------- история ----------
+  function saveToHistory(query){
     let history = JSON.parse(localStorage.getItem('compass_history') || '[]');
-    history.unshift({ query, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+    history.unshift({ query, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
     history = history.slice(0, 20);
     localStorage.setItem('compass_history', JSON.stringify(history));
     renderHistory();
   }
 
-  function renderHistory() {
+  function renderHistory(){
     const list = document.getElementById('historyList');
-    let history = JSON.parse(localStorage.getItem('compass_history') || '[]');
+    const history = JSON.parse(localStorage.getItem('compass_history') || '[]');
     if (history.length === 0) {
       list.innerHTML = '<li class="history-item"><span>История пуста</span></li>';
       return;
     }
-    list.innerHTML = history.map(item => `<li class="history-item"><span>${item.query}</span><span style="color:var(--ink-soft)">${item.time}</span></li>`).join('');
+    list.innerHTML = '';
+    history.forEach(item => {
+      const li = document.createElement('li');
+      li.className = 'history-item';
+      li.innerHTML = `<span>${item.query}</span><span style="color:var(--ink-soft)">${item.time}</span>`;
+      li.addEventListener('click', () => navigate(item.query));
+      list.appendChild(li);
+    });
   }
 
   document.getElementById('clearHistoryBtn').addEventListener('click', () => {
@@ -369,6 +394,9 @@
     renderHistory();
   });
   renderHistory();
+
+  // старт — пустая начальная страница
+  goToStartPage();
 </script>
 
 <script>

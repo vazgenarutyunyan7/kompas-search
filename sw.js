@@ -1,4 +1,4 @@
-const CACHE_NAME = 'compass-v22';
+const CACHE_NAME = 'compass-v23';
 const urlsToCache = ['./', './index.html', './manifest.json'];
 self.addEventListener('install', (event) => {
   self.skipWaiting();

@@ -21,6 +21,7 @@
     --coral: #C4592F;
     --line: #D9D4C6;
     --card: #FFFFFF;
+    --gemini: #4285F4;
   }
   body.dark{
     --bg: #1B1E29;
@@ -49,7 +50,7 @@
   .icon-plain{ background:none; border:none; cursor:pointer; font-size:19px; color:var(--ink-soft); padding:4px; }
 
   /* ---- browser chrome ---- */
-  .toolbar{ display:flex; align-items:center; gap:6px; padding: 0 1.25rem 0.6rem; }
+  .toolbar{ display:flex; align-items:center; gap:6px; padding: 0 1.25rem 0.6rem; position:relative; }
   .tbtn{
     background:var(--card); border:1px solid var(--line); width:34px; height:34px; border-radius:10px;
     font-size:15px; color:var(--ink-soft); cursor:pointer; flex-shrink:0;
@@ -76,6 +77,18 @@
   .suggest-list.show{ display:block; }
   .suggest-item{ padding:9px 14px; font-size:13px; cursor:pointer; }
   .suggest-item:hover{ background: var(--bg); }
+
+  /* ---- открыть внешне: выбор Яндекс/Chrome ---- */
+  .external-menu{
+    position:absolute; top:calc(100% + 4px); right:1.25rem; background:var(--card); border:1px solid var(--line);
+    border-radius:16px; overflow:hidden; z-index:60; display:none; box-shadow:0 8px 20px rgba(0,0,0,0.18); min-width:200px;
+  }
+  .external-menu.show{ display:block; }
+  .external-menu-item{
+    display:flex; align-items:center; gap:10px; padding:11px 14px; font-size:13.5px; cursor:pointer; color:var(--ink);
+  }
+  .external-menu-item:hover{ background:var(--bg); }
+  .external-menu-item .ext-dot{ width:9px; height:9px; border-radius:50%; flex-shrink:0; }
 
   .engines{ display:flex; align-items:center; gap:8px; padding: 0 1.25rem 0.9rem; flex-wrap:wrap; }
   .engine-btn{
@@ -104,9 +117,17 @@
 
   .banner{
     width:100%; max-width:480px; background:#FFF6EF; border:1px solid var(--coral); border-radius:14px;
-    padding:12px 14px; font-size:12.5px; color:#1F2430; margin-top:1.25rem; display:flex; gap:10px; align-items:flex-start;
+    padding:12px 14px; font-size:12.5px; color:#1F2430; margin-top:1.25rem; display:flex; flex-direction:column; gap:10px;
   }
-  .banner button{ background:none; border:none; color:var(--coral); font-weight:600; cursor:pointer; font-size:12.5px; flex-shrink:0; }
+  .banner-top{ display:flex; gap:10px; align-items:flex-start; }
+  .banner button.banner-close{ background:none; border:none; color:var(--coral); font-weight:600; cursor:pointer; font-size:12.5px; flex-shrink:0; }
+  .banner-open-buttons{ display:flex; gap:8px; flex-wrap:wrap; }
+  .banner-open-btn{
+    display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; padding:8px 13px; border-radius:999px;
+    border:none; cursor:pointer; color:#fff;
+  }
+  .banner-open-btn.yandex-btn{ background:#FC3F1D; }
+  .banner-open-btn.chrome-btn{ background:#1A73E8; }
 
   .section-title{ font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px; text-align:center; }
 
@@ -134,11 +155,17 @@
     display:inline-block; transition: background 0.2s, color 0.2s;
   }
   .ai-btn:hover{ background:var(--coral); color:#FFF6EF; }
+  .ai-btn.gemini-open{ border-color:var(--gemini); background:#EAF1FE; color:var(--gemini); }
+  .ai-btn.gemini-open:hover{ background:var(--gemini); color:#fff; }
 
   /* ---- browser view ---- */
   .browser-view{ flex:1; display:none; flex-direction:column; min-height:0; }
   .browser-view.active{ display:flex; }
   .frame{ flex:1; width:100%; border:none; background:#fff; }
+  .frame-fallback-row{
+    display:flex; gap:8px; padding:10px 1.25rem; background:var(--card); border-top:1px solid var(--line); flex-wrap:wrap; align-items:center;
+  }
+  .frame-fallback-row span{ font-size:11.5px; color:var(--ink-soft); margin-right:2px; }
 
   /* ---- live results view ---- */
   .results-view{ flex:1; overflow-y:auto; padding: 1.25rem 1.5rem 2rem; }
@@ -207,6 +234,64 @@
   }
   .modal-actions .save-btn{ background:var(--coral); color:#fff; }
   .modal-actions .cancel-btn{ background:var(--bg); color:var(--ink-soft); border:1px solid var(--line); }
+
+  /* ---- Gemini chat widget ---- */
+  .gemini-fab{
+    position:fixed; right:16px; bottom:82px; width:52px; height:52px; border-radius:50%;
+    background:linear-gradient(135deg,#4285F4,#9B72CB,#D96570); border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(66,133,244,0.4); z-index:9998;
+  }
+  .gemini-fab svg{ width:24px; height:24px; }
+
+  .gemini-panel{
+    position:fixed; right:14px; left:14px; bottom:82px; max-width:420px; margin:0 auto;
+    height:min(70vh, 560px); background:var(--card); border:1px solid var(--line); border-radius:22px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.22); z-index:9999; display:none; flex-direction:column; overflow:hidden;
+  }
+  .gemini-panel.show{ display:flex; }
+  .gemini-header{
+    display:flex; align-items:center; gap:10px; padding:12px 14px; border-bottom:1px solid var(--line);
+    background:linear-gradient(135deg,#4285F4,#9B72CB);
+  }
+  .gemini-header svg{ width:20px; height:20px; flex-shrink:0; }
+  .gemini-header-title{ flex:1; color:#fff; font-family:'Fraunces', serif; font-weight:500; font-size:15px; }
+  .gemini-header button{ background:rgba(255,255,255,0.18); border:none; color:#fff; width:26px; height:26px; border-radius:50%; cursor:pointer; font-size:13px; }
+
+  .gemini-messages{ flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; }
+  .gemini-msg{ max-width:82%; padding:9px 12px; border-radius:16px; font-size:13.5px; line-height:1.45; white-space:pre-wrap; }
+  .gemini-msg.user{ align-self:flex-end; background:var(--indigo); color:#F4F1EA; border-bottom-right-radius:4px; }
+  .gemini-msg.model{ align-self:flex-start; background:var(--bg); color:var(--ink); border:1px solid var(--line); border-bottom-left-radius:4px; }
+  .gemini-msg.system-note{ align-self:center; background:none; color:var(--ink-soft); font-size:12px; text-align:center; }
+  .gemini-typing{ align-self:flex-start; display:flex; gap:4px; padding:10px 12px; }
+  .gemini-typing span{ width:6px; height:6px; border-radius:50%; background:var(--ink-soft); animation:blink 1.2s infinite ease-in-out; }
+  .gemini-typing span:nth-child(2){ animation-delay:0.2s; }
+  .gemini-typing span:nth-child(3){ animation-delay:0.4s; }
+  @keyframes blink{ 0%,80%,100%{ opacity:0.25; } 40%{ opacity:1; } }
+
+  .gemini-input-row{ display:flex; gap:8px; padding:10px 12px; border-top:1px solid var(--line); }
+  .gemini-input-row textarea{
+    flex:1; resize:none; border:1px solid var(--line); border-radius:14px; padding:9px 12px; font-size:13.5px;
+    font-family:'Inter', sans-serif; outline:none; background:var(--bg); color:var(--ink); max-height:80px;
+  }
+  .gemini-send{
+    width:38px; height:38px; border-radius:50%; border:none; background:var(--gemini); color:#fff; cursor:pointer;
+    flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:15px;
+  }
+  .gemini-send:disabled{ opacity:0.4; cursor:default; }
+
+  .gemini-setup{ flex:1; overflow-y:auto; padding:18px 16px; display:flex; flex-direction:column; gap:10px; }
+  .gemini-setup p{ font-size:12.5px; color:var(--ink-soft); line-height:1.5; }
+  .gemini-setup a{ color:var(--gemini); }
+  .gemini-setup input{
+    width:100%; border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:13.5px;
+    outline:none; background:var(--bg); color:var(--ink); font-family:'Inter', sans-serif;
+  }
+  .gemini-setup label{ font-size:11.5px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.4px; }
+  .gemini-setup-save{
+    margin-top:4px; border:none; border-radius:999px; padding:10px; font-size:13px; font-weight:600; cursor:pointer;
+    background:var(--gemini); color:#fff; font-family:'Inter', sans-serif;
+  }
+  .gemini-clear-key{ font-size:11.5px; color:var(--coral); background:none; border:none; cursor:pointer; text-align:left; padding:0; margin-top:2px; }
 </style>
 </head>
 <body>
@@ -236,7 +321,11 @@
       <div class="suggest-list" id="suggestList"></div>
     </div>
     <button type="button" class="tbtn star" id="btnBookmark" title="В избранное" disabled>☆</button>
-    <button type="button" class="tbtn external" id="btnExternal" title="Открыть в браузере">↗</button>
+    <button type="button" class="tbtn external" id="btnExternal" title="Открыть в другом браузере">↗</button>
+    <div class="external-menu" id="externalMenu">
+      <div class="external-menu-item" id="openYandexItem"><span class="ext-dot" style="background:#FC3F1D"></span>Открыть в Яндекс.Браузере</div>
+      <div class="external-menu-item" id="openChromeItem"><span class="ext-dot" style="background:#1A73E8"></span>Открыть в Chrome</div>
+    </div>
   </div>
 
   <div class="engines" id="engineRow">
@@ -255,8 +344,14 @@
         <button type="button" class="install-btn" id="btnInstall">Установить Компас на устройство</button>
 
         <div class="banner" id="banner">
-          <span>Некоторые сайты (например, страница поиска Google) запрещают показывать себя внутри приложений — в этом случае нажмите ↗, чтобы открыть их в обычном браузере.</span>
-          <button type="button" id="bannerClose">Понятно</button>
+          <div class="banner-top">
+            <span>Некоторые сайты (например, страница поиска Google) запрещают показывать себя внутри приложений. Если страница не открывается — используйте кнопку ↗ или один из вариантов ниже:</span>
+            <button type="button" class="banner-close" id="bannerClose">Понятно</button>
+          </div>
+          <div class="banner-open-buttons">
+            <button type="button" class="banner-open-btn yandex-btn" id="bannerYandexBtn">🔴 Яндекс.Браузер</button>
+            <button type="button" class="banner-open-btn chrome-btn" id="bannerChromeBtn">🔵 Chrome</button>
+          </div>
         </div>
 
         <div class="shortcuts-section">
@@ -268,7 +363,7 @@
           <div class="section-title">Нейросети и ИИ</div>
           <div class="ai-buttons">
             <a href="https://chatgpt.com" target="_blank" class="ai-btn">ChatGPT</a>
-            <a href="https://gemini.google.com" target="_blank" class="ai-btn">Gemini</a>
+            <button type="button" class="ai-btn gemini-open" id="openGeminiFromHome">✨ Gemini (в Компасе)</button>
             <a href="https://copilot.microsoft.com" target="_blank" class="ai-btn">Copilot</a>
             <a href="https://claude.ai" target="_blank" class="ai-btn">Claude</a>
           </div>
@@ -281,6 +376,11 @@
 
       <div class="browser-view" id="browserView">
         <iframe id="frame" class="frame" name="compass-frame"></iframe>
+        <div class="frame-fallback-row">
+          <span>Не открывается?</span>
+          <button type="button" class="banner-open-btn yandex-btn" id="frameYandexBtn" style="padding:6px 11px; font-size:11.5px;">🔴 Яндекс</button>
+          <button type="button" class="banner-open-btn chrome-btn" id="frameChromeBtn" style="padding:6px 11px; font-size:11.5px;">🔵 Chrome</button>
+        </div>
       </div>
 
     </div>
@@ -335,6 +435,41 @@
         <button type="button" class="cancel-btn" id="shortcutCancel">Отмена</button>
         <button type="button" class="save-btn" id="shortcutSave">Добавить</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ---- Gemini widget ---- -->
+  <button type="button" class="gemini-fab" id="geminiFab" title="Gemini">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2C12 7.523 7.523 12 2 12C7.523 12 12 16.477 12 22C12 16.477 16.477 12 22 12C16.477 12 12 7.523 12 2Z" fill="white"/>
+    </svg>
+  </button>
+
+  <div class="gemini-panel" id="geminiPanel">
+    <div class="gemini-header">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C12 7.523 7.523 12 2 12C7.523 12 12 16.477 12 22C12 16.477 16.477 12 22 12C16.477 12 12 7.523 12 2Z" fill="white"/>
+      </svg>
+      <div class="gemini-header-title">Gemini</div>
+      <button type="button" id="geminiSettingsBtn" title="Настройки">⚙</button>
+      <button type="button" id="geminiCloseBtn" title="Закрыть">✕</button>
+    </div>
+
+    <div class="gemini-setup" id="geminiSetup" style="display:none;">
+      <label>API-ключ Gemini</label>
+      <input id="geminiKeyInput" type="password" placeholder="Вставьте свой API-ключ" autocomplete="off" />
+      <p>Ключ берётся бесплатно в <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> и хранится только на вашем устройстве (localStorage) — он никуда не отправляется, кроме прямых запросов к Google.</p>
+      <label>Модель</label>
+      <input id="geminiModelInput" type="text" placeholder="gemini-2.0-flash" />
+      <p style="margin-top:-4px;">Если модель не отвечает — проверьте актуальное название в документации Google AI Studio и впишите его сюда.</p>
+      <button type="button" class="gemini-setup-save" id="geminiSaveKeyBtn">Сохранить и начать чат</button>
+      <button type="button" class="gemini-clear-key" id="geminiClearKeyBtn">Удалить сохранённый ключ</button>
+    </div>
+
+    <div class="gemini-messages" id="geminiMessages"></div>
+    <div class="gemini-input-row" id="geminiInputRow">
+      <textarea id="geminiInput" rows="1" placeholder="Спросите что-нибудь у Gemini..."></textarea>
+      <button type="button" class="gemini-send" id="geminiSendBtn">➤</button>
     </div>
   </div>
 
@@ -407,6 +542,53 @@
     return url;
   }
 
+  // ---------- открыть в другом браузере (Яндекс / Chrome) ----------
+  function isAndroid(){ return /Android/i.test(navigator.userAgent); }
+  function openExternalUrl(url, target){
+    if (!url) return;
+    const bare = url.replace(/^https?:\/\//i, '');
+    if (isAndroid()) {
+      const pkg = target === 'yandex' ? 'ru.yandex.searchplugin' : 'com.android.chrome';
+      const intentUrl = 'intent://' + bare + '#Intent;scheme=https;package=' + pkg + ';end';
+      const fallbackTimer = setTimeout(() => { window.open(url, '_blank'); }, 900);
+      window.addEventListener('blur', () => clearTimeout(fallbackTimer), { once: true });
+      window.location.href = intentUrl;
+    } else {
+      // iOS / десктоп: у Chrome есть отдельная схема, у Яндекс.Браузера единой iOS-схемы нет — открываем обычной ссылкой
+      if (target === 'chrome' && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        window.location.href = 'googlechrome://' + bare;
+        setTimeout(() => window.open(url, '_blank'), 700);
+      } else {
+        window.open(url, '_blank');
+      }
+    }
+  }
+  function currentUrlForExternalOpen(){
+    return currentExternalUrl || (addressInput.value ? normalizeUrl(addressInput.value) : null);
+  }
+
+  const externalMenu = document.getElementById('externalMenu');
+  document.getElementById('btnExternal').addEventListener('click', (e) => {
+    e.stopPropagation();
+    externalMenu.classList.toggle('show');
+  });
+  document.getElementById('openYandexItem').addEventListener('click', () => {
+    externalMenu.classList.remove('show');
+    openExternalUrl(currentUrlForExternalOpen(), 'yandex');
+  });
+  document.getElementById('openChromeItem').addEventListener('click', () => {
+    externalMenu.classList.remove('show');
+    openExternalUrl(currentUrlForExternalOpen(), 'chrome');
+  });
+  document.addEventListener('click', (e) => {
+    if (!externalMenu.contains(e.target)) externalMenu.classList.remove('show');
+  });
+
+  document.getElementById('bannerYandexBtn').addEventListener('click', () => openExternalUrl(currentUrlForExternalOpen() || engineSearchUrl(''), 'yandex'));
+  document.getElementById('bannerChromeBtn').addEventListener('click', () => openExternalUrl(currentUrlForExternalOpen() || engineSearchUrl(''), 'chrome'));
+  document.getElementById('frameYandexBtn').addEventListener('click', () => openExternalUrl(currentExternalUrl, 'yandex'));
+  document.getElementById('frameChromeBtn').addEventListener('click', () => openExternalUrl(currentExternalUrl, 'chrome'));
+
   // ---------- браузер ----------
   const startPage = document.getElementById('startPage');
   const resultsView = document.getElementById('resultsView');
@@ -419,7 +601,6 @@
   const btnBack = document.getElementById('btnBack');
   const btnForward = document.getElementById('btnForward');
   const btnReload = document.getElementById('btnReload');
-  const btnExternal = document.getElementById('btnExternal');
   const btnBookmark = document.getElementById('btnBookmark');
   const suggestList = document.getElementById('suggestList');
 
@@ -564,10 +745,6 @@
     const src = frame.src; frame.src = 'about:blank';
     requestAnimationFrame(() => { frame.src = src; });
   });
-  btnExternal.addEventListener('click', () => {
-    const url = currentExternalUrl || (addressInput.value ? normalizeUrl(addressInput.value) : null);
-    if (url) window.open(url, '_blank');
-  });
 
   // ---------- автодополнение по истории ----------
   function renderSuggestions(val){
@@ -693,6 +870,143 @@
     document.getElementById('shortcutUrl').value = '';
     shortcutModal.classList.remove('show');
   });
+
+  // ---------- Gemini чат-виджет ----------
+  const geminiFab = document.getElementById('geminiFab');
+  const geminiPanel = document.getElementById('geminiPanel');
+  const geminiSetup = document.getElementById('geminiSetup');
+  const geminiMessages = document.getElementById('geminiMessages');
+  const geminiInputRow = document.getElementById('geminiInputRow');
+  const geminiInput = document.getElementById('geminiInput');
+  const geminiSendBtn = document.getElementById('geminiSendBtn');
+  const geminiKeyInput = document.getElementById('geminiKeyInput');
+  const geminiModelInput = document.getElementById('geminiModelInput');
+  const geminiHistory = []; // { role: 'user'|'model', parts: [{text}] }
+
+  function getGeminiKey(){ return localStorage.getItem('compass_gemini_key') || ''; }
+  function getGeminiModel(){ return localStorage.getItem('compass_gemini_model') || 'gemini-2.0-flash'; }
+
+  function openGeminiPanel(){
+    geminiPanel.classList.add('show');
+    if (!getGeminiKey()) {
+      showGeminiSetup();
+    } else {
+      showGeminiChat();
+    }
+  }
+  function closeGeminiPanel(){ geminiPanel.classList.remove('show'); }
+  geminiFab.addEventListener('click', openGeminiPanel);
+  document.getElementById('openGeminiFromHome').addEventListener('click', openGeminiPanel);
+  document.getElementById('geminiCloseBtn').addEventListener('click', closeGeminiPanel);
+  document.getElementById('geminiSettingsBtn').addEventListener('click', () => {
+    geminiKeyInput.value = getGeminiKey();
+    geminiModelInput.value = getGeminiModel();
+    showGeminiSetup();
+  });
+
+  function showGeminiSetup(){
+    geminiSetup.style.display = 'flex';
+    geminiMessages.style.display = 'none';
+    geminiInputRow.style.display = 'none';
+    geminiModelInput.value = getGeminiModel();
+  }
+  function showGeminiChat(){
+    geminiSetup.style.display = 'none';
+    geminiMessages.style.display = 'flex';
+    geminiInputRow.style.display = 'flex';
+    if (geminiMessages.children.length === 0) {
+      addGeminiBubble('system-note', 'Спросите что угодно — сообщения уходят напрямую в Google Gemini с вашего устройства.');
+    }
+    geminiInput.focus();
+  }
+
+  document.getElementById('geminiSaveKeyBtn').addEventListener('click', () => {
+    const key = geminiKeyInput.value.trim();
+    const model = geminiModelInput.value.trim() || 'gemini-2.0-flash';
+    if (!key) return;
+    localStorage.setItem('compass_gemini_key', key);
+    localStorage.setItem('compass_gemini_model', model);
+    showGeminiChat();
+  });
+  document.getElementById('geminiClearKeyBtn').addEventListener('click', () => {
+    localStorage.removeItem('compass_gemini_key');
+    geminiKeyInput.value = '';
+    showGeminiSetup();
+  });
+
+  function addGeminiBubble(cls, text){
+    const div = document.createElement('div');
+    div.className = 'gemini-msg ' + cls;
+    div.textContent = text;
+    geminiMessages.appendChild(div);
+    geminiMessages.scrollTop = geminiMessages.scrollHeight;
+    return div;
+  }
+  function addGeminiTyping(){
+    const div = document.createElement('div');
+    div.className = 'gemini-typing';
+    div.id = 'geminiTypingIndicator';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    geminiMessages.appendChild(div);
+    geminiMessages.scrollTop = geminiMessages.scrollHeight;
+  }
+  function removeGeminiTyping(){
+    const el = document.getElementById('geminiTypingIndicator');
+    if (el) el.remove();
+  }
+
+  geminiInput.addEventListener('input', () => {
+    geminiInput.style.height = 'auto';
+    geminiInput.style.height = Math.min(geminiInput.scrollHeight, 80) + 'px';
+  });
+  geminiInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendGeminiMessage(); }
+  });
+  geminiSendBtn.addEventListener('click', sendGeminiMessage);
+
+  async function sendGeminiMessage(){
+    const text = geminiInput.value.trim();
+    if (!text) return;
+    const key = getGeminiKey();
+    if (!key) { showGeminiSetup(); return; }
+
+    addGeminiBubble('user', text);
+    geminiHistory.push({ role: 'user', parts: [{ text }] });
+    geminiInput.value = '';
+    geminiInput.style.height = 'auto';
+    geminiSendBtn.disabled = true;
+    addGeminiTyping();
+
+    try {
+      const model = getGeminiModel();
+      const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(key);
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: geminiHistory })
+      });
+      const data = await res.json();
+      removeGeminiTyping();
+
+      if (!res.ok) {
+        const msg = data?.error?.message || ('Ошибка ' + res.status);
+        addGeminiBubble('system-note', 'Не удалось получить ответ: ' + msg);
+        return;
+      }
+      const reply = data?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
+      if (!reply) {
+        addGeminiBubble('system-note', 'Пустой ответ от Gemini. Попробуйте переформулировать вопрос.');
+        return;
+      }
+      addGeminiBubble('model', reply);
+      geminiHistory.push({ role: 'model', parts: [{ text: reply }] });
+    } catch (err) {
+      removeGeminiTyping();
+      addGeminiBubble('system-note', 'Ошибка сети. Проверьте подключение к интернету и ключ API.');
+    } finally {
+      geminiSendBtn.disabled = false;
+    }
+  }
 
   // ---------- установка PWA ----------
   let deferredPrompt = null;

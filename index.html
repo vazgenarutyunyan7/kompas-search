@@ -22,105 +22,115 @@
     --line: #D9D4C6;
     --card: #FFFFFF;
   }
+  body.dark{
+    --bg: #1B1E29;
+    --ink: #EDEAE1;
+    --ink-soft: #9298A6;
+    --indigo: #8892D1;
+    --coral: #E07A50;
+    --line: #3A3F52;
+    --card: #262B3B;
+  }
 
   *{ box-sizing:border-box; margin:0; padding:0; }
   html, body{ height:100%; }
 
   body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Inter', sans-serif;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    padding-bottom: 65px;
+    background:var(--bg); color:var(--ink); font-family:'Inter', sans-serif;
+    min-height:100vh; display:flex; flex-direction:column; padding-bottom: 65px;
+    transition: background 0.2s, color 0.2s;
   }
 
-  .topbar{
-    width:100%;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0.9rem 1.25rem 0.5rem;
-  }
-
-  .mark{ display:flex; align-items:center; gap:10px; }
+  .topbar{ width:100%; display:flex; align-items:center; justify-content:space-between; padding:0.9rem 1.25rem 0.5rem; }
+  .mark{ display:flex; align-items:center; gap:10px; cursor:pointer; }
   .needle{ width:26px; height:26px; flex-shrink:0; }
-  .wordmark{
-    font-family:'Fraunces', serif; font-weight:500; font-size:22px;
-    letter-spacing:-0.4px; color:var(--indigo);
-  }
+  .wordmark{ font-family:'Fraunces', serif; font-weight:500; font-size:22px; letter-spacing:-0.4px; color:var(--indigo); }
   .wordmark em{ font-style:italic; color:var(--coral); }
+  .icon-plain{ background:none; border:none; cursor:pointer; font-size:19px; color:var(--ink-soft); padding:4px; }
 
   /* ---- browser chrome ---- */
-  .toolbar{
-    display:flex; align-items:center; gap:6px;
-    padding: 0 1.25rem 0.6rem;
-  }
+  .toolbar{ display:flex; align-items:center; gap:6px; padding: 0 1.25rem 0.6rem; }
   .tbtn{
-    border:none; background:var(--card); border:1px solid var(--line);
-    width:36px; height:36px; border-radius:10px; font-size:16px;
-    color:var(--ink-soft); cursor:pointer; flex-shrink:0;
+    background:var(--card); border:1px solid var(--line); width:34px; height:34px; border-radius:10px;
+    font-size:15px; color:var(--ink-soft); cursor:pointer; flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
   }
-  .tbtn:disabled{ opacity:0.4; cursor:default; }
+  .tbtn:disabled{ opacity:0.35; cursor:default; }
   .tbtn.external{ color:var(--coral); border-color:var(--coral); }
+  .tbtn.star.active-star{ color:#D9A441; border-color:#D9A441; }
 
+  .address-wrap{ position:relative; flex:1; min-width:0; }
   .address-form{
-    flex:1; min-width:0;
-    display:flex; align-items:center; gap:8px;
-    background:var(--card); border:1px solid var(--line);
+    display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--line);
     border-radius:999px; padding:9px 14px;
   }
   .address-form svg{ flex-shrink:0; color:var(--ink-soft); }
-  .address-form input{
-    flex:1; min-width:0; border:none; outline:none; background:transparent;
-    font-family:'Inter', sans-serif; font-size:14px; color:var(--ink);
-  }
-  .clear-btn{
-    background:none; border:none; cursor:pointer;
-    color:var(--ink-soft); display:none; padding:2px; flex-shrink:0;
-  }
+  .address-form input{ flex:1; min-width:0; border:none; outline:none; background:transparent; font-family:'Inter', sans-serif; font-size:14px; color:var(--ink); }
+  .clear-btn{ background:none; border:none; cursor:pointer; color:var(--ink-soft); display:none; padding:2px; flex-shrink:0; }
   .clear-btn.show{ display:flex; }
 
-  .engines{
-    display:flex; gap:8px; padding: 0 1.25rem 0.9rem;
-    flex-wrap:wrap;
+  .suggest-list{
+    position:absolute; top:calc(100% + 4px); left:0; right:0; background:var(--card); border:1px solid var(--line);
+    border-radius:14px; overflow:hidden; z-index:50; display:none; box-shadow:0 8px 20px rgba(0,0,0,0.15);
   }
+  .suggest-list.show{ display:block; }
+  .suggest-item{ padding:9px 14px; font-size:13px; cursor:pointer; }
+  .suggest-item:hover{ background: var(--bg); }
+
+  .engines{ display:flex; align-items:center; gap:8px; padding: 0 1.25rem 0.9rem; flex-wrap:wrap; }
   .engine-btn{
-    font-family:'Inter', sans-serif; font-size:12px; font-weight:500;
-    padding:6px 13px; border-radius:999px; border:1px solid var(--line);
-    background:var(--card); color:var(--ink); cursor:pointer;
+    font-family:'Inter', sans-serif; font-size:12px; font-weight:500; padding:6px 13px; border-radius:999px;
+    border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer;
   }
   .engine-btn.active{ background:var(--indigo); border-color:var(--indigo); color:#F4F1EA; }
+
+  .safe-toggle{ display:flex; align-items:center; gap:6px; margin-left:auto; font-size:12px; color:var(--ink-soft); cursor:pointer; user-select:none; }
+  .switch{ width:32px; height:18px; border-radius:999px; background:var(--line); position:relative; flex-shrink:0; transition:background 0.2s; }
+  .switch::after{ content:''; position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:50%; background:#fff; transition:left 0.2s; }
+  .safe-toggle.on .switch{ background:#5C8D62; }
+  .safe-toggle.on .switch::after{ left:16px; }
 
   main{ flex:1; width:100%; display:flex; flex-direction:column; min-height:0; }
   .page-section{ display:none; flex:1; min-height:0; flex-direction:column; }
   .page-section.active{ display:flex; }
 
   /* ---- start page ---- */
-  .start-page{ flex:1; display:flex; flex-direction:column; align-items:center; padding: 2rem 1.5rem; overflow-y:auto; }
-  .start-page .mark{ margin-bottom:0.4rem; }
-  .start-page .wordmark{ font-size:32px; }
-  .hint{ font-size:13px; color:var(--ink-soft); text-align:center; max-width:420px; margin-top:0.4rem; }
+  .start-page{ flex:1; display:flex; flex-direction:column; align-items:center; padding: 1.5rem 1.5rem 2rem; overflow-y:auto; }
+  .hint{ font-size:13px; color:var(--ink-soft); text-align:center; max-width:420px; }
+  .install-btn{
+    margin-top:0.9rem; font-size:12.5px; font-weight:600; color:var(--card); background:var(--indigo);
+    border:none; border-radius:999px; padding:8px 16px; cursor:pointer; display:none;
+  }
 
   .banner{
-    width:100%; max-width:480px; background:#FFF6EF; border:1px solid var(--coral);
-    border-radius:14px; padding:12px 14px; font-size:12.5px; color:var(--ink);
-    margin-top:1.25rem; display:flex; gap:10px; align-items:flex-start;
+    width:100%; max-width:480px; background:#FFF6EF; border:1px solid var(--coral); border-radius:14px;
+    padding:12px 14px; font-size:12.5px; color:#1F2430; margin-top:1.25rem; display:flex; gap:10px; align-items:flex-start;
   }
   .banner button{ background:none; border:none; color:var(--coral); font-weight:600; cursor:pointer; font-size:12.5px; flex-shrink:0; }
 
-  .ai-section{ width:100%; max-width:480px; margin-top:1.75rem; }
-  .ai-title{
-    font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:8px;
-    text-transform:uppercase; letter-spacing:0.5px; text-align:center;
+  .section-title{ font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px; text-align:center; }
+
+  .shortcuts-section{ width:100%; max-width:480px; margin-top:1.75rem; }
+  .shortcuts-grid{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+  .shortcut-tile{ position:relative; width:64px; }
+  .shortcut-tile a{ display:flex; flex-direction:column; align-items:center; gap:5px; text-decoration:none; }
+  .shortcut-avatar{
+    width:46px; height:46px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:700; font-size:17px; font-family:'Fraunces', serif;
   }
+  .shortcut-label{ font-size:10.5px; color:var(--ink-soft); text-align:center; max-width:64px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .shortcut-remove{
+    position:absolute; top:-4px; right:6px; width:17px; height:17px; border-radius:50%; background:var(--card);
+    border:1px solid var(--line); font-size:10px; color:var(--ink-soft); display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .shortcut-add a, .shortcut-add{ cursor:pointer; }
+  .shortcut-add .shortcut-avatar{ background:transparent; border:2px dashed var(--line); color:var(--ink-soft); }
+
+  .ai-section{ width:100%; max-width:480px; margin-top:1.75rem; }
   .ai-buttons{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
   .ai-btn{
-    font-family:'Inter', sans-serif; font-size:13px; font-weight:500;
-    padding:7px 15px; border-radius:999px; border:1px solid var(--coral);
-    background:#FFF6EF; color:var(--coral); cursor:pointer; text-decoration:none;
+    font-family:'Inter', sans-serif; font-size:13px; font-weight:500; padding:7px 15px; border-radius:999px;
+    border:1px solid var(--coral); background:#FFF6EF; color:var(--coral); cursor:pointer; text-decoration:none;
     display:inline-block; transition: background 0.2s, color 0.2s;
   }
   .ai-btn:hover{ background:var(--coral); color:#FFF6EF; }
@@ -130,40 +140,57 @@
   .browser-view.active{ display:flex; }
   .frame{ flex:1; width:100%; border:none; background:#fff; }
 
-  /* ---- history / notes ---- */
+  /* ---- lists (history / bookmarks / notes) ---- */
   .inner-page{ flex:1; overflow-y:auto; padding: 1.25rem 1.5rem 2rem; display:flex; justify-content:center; }
   .card-box{ background:var(--card); border:1px solid var(--line); border-radius:20px; padding:1.25rem; width:100%; max-width:520px; height:fit-content; }
-  .history-list{ list-style:none; margin-top:10px; }
-  .history-item{
-    display:flex; justify-content:space-between; align-items:center; gap:8px;
-    padding:10px 0; border-bottom:1px solid var(--line); font-size:14px; cursor:pointer;
+  .list-item{
+    display:flex; justify-content:space-between; align-items:center; gap:8px; padding:10px 0;
+    border-bottom:1px solid var(--line); font-size:14px;
   }
-  .history-item:hover{ color:var(--coral); }
+  .list-item .item-main{ flex:1; min-width:0; cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .list-item .item-main:hover{ color:var(--coral); }
+  .list-item .item-remove{ background:none; border:none; color:var(--ink-soft); cursor:pointer; font-size:13px; flex-shrink:0; }
   .notes-area{
-    width:100%; height:220px; border:1px solid var(--line); border-radius:12px;
-    padding:12px; font-family:'Inter', sans-serif; font-size:14px; resize:none;
-    outline:none; background:var(--bg);
+    width:100%; height:220px; border:1px solid var(--line); border-radius:12px; padding:12px;
+    font-family:'Inter', sans-serif; font-size:14px; resize:none; outline:none; background:var(--bg); color:var(--ink);
   }
 
   .bottom-nav{
-    position:fixed; bottom:0; left:0; right:0; height:65px;
-    background:var(--card); border-top:1px solid var(--line);
+    position:fixed; bottom:0; left:0; right:0; height:65px; background:var(--card); border-top:1px solid var(--line);
     display:flex; justify-content:space-around; align-items:center; z-index:9999;
   }
   .nav-item{
-    display:flex; flex-direction:column; align-items:center; gap:3px;
-    background:none; border:none; color:var(--ink-soft);
-    font-size:11px; font-weight:500; cursor:pointer; width:33.33%; padding:8px 0;
+    display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:none; color:var(--ink-soft);
+    font-size:10.5px; font-weight:500; cursor:pointer; flex:1; padding:8px 0;
   }
   .nav-item.active{ color:var(--coral); font-weight:600; }
-  .nav-icon{ font-size:20px; pointer-events:none; }
+  .nav-icon{ font-size:19px; pointer-events:none; }
   .nav-item span{ pointer-events:none; }
+
+  /* ---- add-shortcut modal ---- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(31,36,48,0.4); display:none; align-items:center; justify-content:center;
+    z-index:10000; padding:1.5rem;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-box{ background:var(--card); border-radius:20px; padding:1.5rem; width:100%; max-width:360px; }
+  .modal-box h3{ font-family:'Fraunces', serif; font-weight:500; margin-bottom:1rem; }
+  .modal-box input{
+    width:100%; border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:14px;
+    margin-bottom:10px; outline:none; background:var(--bg); color:var(--ink); font-family:'Inter', sans-serif;
+  }
+  .modal-actions{ display:flex; gap:8px; margin-top:4px; }
+  .modal-actions button{
+    flex:1; border:none; border-radius:999px; padding:10px; font-size:13px; font-weight:600; cursor:pointer; font-family:'Inter', sans-serif;
+  }
+  .modal-actions .save-btn{ background:var(--coral); color:#fff; }
+  .modal-actions .cancel-btn{ background:var(--bg); color:var(--ink-soft); border:1px solid var(--line); }
 </style>
 </head>
 <body>
 
   <div class="topbar">
-    <div class="mark">
+    <div class="mark" id="logoHome">
       <svg class="needle" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="17" cy="17" r="15.5" stroke="#33395C" stroke-width="1.5"/>
         <path d="M17 6L21 17L17 28L13 17L17 6Z" fill="#C4592F"/>
@@ -171,18 +198,22 @@
       </svg>
       <div class="wordmark">Комп<em>а</em>с</div>
     </div>
+    <button type="button" class="icon-plain" id="btnTheme" title="Тема">🌙</button>
   </div>
 
   <div class="toolbar">
-    <button type="button" class="tbtn" id="btnHome" title="Начальная страница">⌂</button>
     <button type="button" class="tbtn" id="btnBack" title="Назад">←</button>
     <button type="button" class="tbtn" id="btnForward" title="Вперёд">→</button>
     <button type="button" class="tbtn" id="btnReload" title="Обновить">⟳</button>
-    <form id="addressForm" class="address-form">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input id="q" type="text" placeholder="Поиск в сети или адрес сайта" autocomplete="off" />
-      <button type="button" class="clear-btn" id="clearBtn">✕</button>
-    </form>
+    <div class="address-wrap">
+      <form id="addressForm" class="address-form">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input id="q" type="text" placeholder="Поиск в сети или адрес сайта" autocomplete="off" />
+        <button type="button" class="clear-btn" id="clearBtn">✕</button>
+      </form>
+      <div class="suggest-list" id="suggestList"></div>
+    </div>
+    <button type="button" class="tbtn star" id="btnBookmark" title="В избранное" disabled>☆</button>
     <button type="button" class="tbtn external" id="btnExternal" title="Открыть в браузере">↗</button>
   </div>
 
@@ -191,6 +222,7 @@
     <button type="button" class="engine-btn" data-engine="yandex">Яндекс</button>
     <button type="button" class="engine-btn" data-engine="duckduckgo">DuckDuckGo</button>
     <button type="button" class="engine-btn" data-engine="bing">Bing</button>
+    <label class="safe-toggle" id="safeToggle"><span class="switch"></span>🛡 Безопасный поиск</label>
   </div>
 
   <main>
@@ -198,14 +230,20 @@
 
       <div class="start-page" id="startPage">
         <div class="hint">Введите запрос или адрес сайта в строке выше — страница откроется прямо здесь, внутри Компаса.</div>
+        <button type="button" class="install-btn" id="btnInstall">Установить Компас на устройство</button>
 
         <div class="banner" id="banner">
-          <span>Некоторые сайты (например, страница поиска Google) запрещают показывать себя внутри приложений и не откроются во фрейме — в этом случае нажмите ↗, чтобы открыть их в обычном браузере.</span>
+          <span>Некоторые сайты (например, страница поиска Google) запрещают показывать себя внутри приложений — в этом случае нажмите ↗, чтобы открыть их в обычном браузере.</span>
           <button type="button" id="bannerClose">Понятно</button>
         </div>
 
+        <div class="shortcuts-section">
+          <div class="section-title">Быстрый доступ</div>
+          <div class="shortcuts-grid" id="shortcutsGrid"></div>
+        </div>
+
         <div class="ai-section">
-          <div class="ai-title">Нейросети и ИИ</div>
+          <div class="section-title">Нейросети и ИИ</div>
           <div class="ai-buttons">
             <a href="https://chatgpt.com" target="_blank" class="ai-btn">ChatGPT</a>
             <a href="https://gemini.google.com" target="_blank" class="ai-btn">Gemini</a>
@@ -221,12 +259,23 @@
 
     </div>
 
+    <div class="page-section" id="sec-bookmarks">
+      <div class="inner-page">
+        <div class="card-box">
+          <h3>Избранное</h3>
+          <ul class="list-item-list" id="bookmarksList" style="list-style:none; margin-top:10px;">
+            <li class="list-item"><span>Пока пусто — нажмите ☆ на открытой странице</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
     <div class="page-section" id="sec-history">
       <div class="inner-page">
         <div class="card-box">
           <h3>История поиска</h3>
-          <ul class="history-list" id="historyList">
-            <li class="history-item"><span>История пуста</span></li>
+          <ul class="list-item-list" id="historyList" style="list-style:none; margin-top:10px;">
+            <li class="list-item"><span>История пуста</span></li>
           </ul>
           <button class="engine-btn" style="margin-top:15px; width:100%" id="clearHistoryBtn">Очистить историю</button>
         </div>
@@ -246,31 +295,52 @@
 
   <nav class="bottom-nav">
     <button type="button" class="nav-item active" data-target="sec-home"><span class="nav-icon">🏠</span><span>Главное</span></button>
+    <button type="button" class="nav-item" data-target="sec-bookmarks"><span class="nav-icon">⭐</span><span>Избранное</span></button>
     <button type="button" class="nav-item" data-target="sec-history"><span class="nav-icon">🕒</span><span>История</span></button>
     <button type="button" class="nav-item" data-target="sec-notes"><span class="nav-icon">📝</span><span>Заметки</span></button>
   </nav>
 
+  <div class="modal-overlay" id="shortcutModal">
+    <div class="modal-box">
+      <h3>Добавить сайт</h3>
+      <input id="shortcutName" type="text" placeholder="Название" />
+      <input id="shortcutUrl" type="text" placeholder="Ссылка (example.com)" />
+      <div class="modal-actions">
+        <button type="button" class="cancel-btn" id="shortcutCancel">Отмена</button>
+        <button type="button" class="save-btn" id="shortcutSave">Добавить</button>
+      </div>
+    </div>
+  </div>
+
 <script>
-  // ---------- навигация по нижним вкладкам ----------
+  // ---------- тема ----------
+  const btnTheme = document.getElementById('btnTheme');
+  function applyTheme(t){
+    document.body.classList.toggle('dark', t === 'dark');
+    btnTheme.textContent = t === 'dark' ? '☀️' : '🌙';
+  }
+  applyTheme(localStorage.getItem('compass_theme') || 'light');
+  btnTheme.addEventListener('click', () => {
+    const next = document.body.classList.contains('dark') ? 'light' : 'dark';
+    localStorage.setItem('compass_theme', next);
+    applyTheme(next);
+  });
+
+  // ---------- нижние вкладки ----------
   const navItems = document.querySelectorAll('.nav-item');
   const pageSections = document.querySelectorAll('.page-section');
-
   function showSection(id){
     navItems.forEach(i => i.classList.toggle('active', i.dataset.target === id));
     pageSections.forEach(s => s.classList.toggle('active', s.id === id));
   }
-  navItems.forEach(item => {
-    item.addEventListener('click', () => showSection(item.dataset.target));
-  });
+  navItems.forEach(item => item.addEventListener('click', () => showSection(item.dataset.target)));
 
   // ---------- заметки ----------
   const notesArea = document.getElementById('notesInput');
   notesArea.value = localStorage.getItem('compass_notes') || '';
-  notesArea.addEventListener('input', () => {
-    localStorage.setItem('compass_notes', notesArea.value);
-  });
+  notesArea.addEventListener('input', () => localStorage.setItem('compass_notes', notesArea.value));
 
-  // ---------- баннер про X-Frame-Options ----------
+  // ---------- баннер ----------
   const banner = document.getElementById('banner');
   if (localStorage.getItem('compass_banner_dismissed')) banner.style.display = 'none';
   document.getElementById('bannerClose').addEventListener('click', () => {
@@ -278,45 +348,56 @@
     localStorage.setItem('compass_banner_dismissed', '1');
   });
 
-  // ---------- поисковые системы ----------
+  // ---------- поисковые системы + безопасный поиск ----------
   const engineUrls = {
     google: q => 'https://www.google.com/search?q=' + encodeURIComponent(q),
     yandex: q => 'https://yandex.ru/search/?text=' + encodeURIComponent(q),
     duckduckgo: q => 'https://duckduckgo.com/html/?q=' + encodeURIComponent(q),
     bing: q => 'https://www.bing.com/search?q=' + encodeURIComponent(q)
   };
+  const SAFE_PARAMS = { google: 'safe=active', bing: 'safesearch=strict', duckduckgo: 'kp=1', yandex: 'family_filter=1' };
 
   const engineBtns = document.querySelectorAll('.engine-btn');
   let engine = localStorage.getItem('selectedEngine') || 'duckduckgo';
-
-  function setActiveEngine(targetEngine){
-    engine = targetEngine;
-    localStorage.setItem('selectedEngine', engine);
-    engineBtns.forEach(b => b.classList.toggle('active', b.dataset.engine === engine));
-  }
+  function setActiveEngine(t){ engine = t; localStorage.setItem('selectedEngine', engine); engineBtns.forEach(b => b.classList.toggle('active', b.dataset.engine === engine)); }
   setActiveEngine(engine);
   engineBtns.forEach(btn => btn.addEventListener('click', () => setActiveEngine(btn.dataset.engine)));
 
-  // ---------- браузерная часть ----------
+  const safeToggle = document.getElementById('safeToggle');
+  let safeSearch = localStorage.getItem('compass_safe_search') === '1';
+  function applySafeToggle(){ safeToggle.classList.toggle('on', safeSearch); }
+  applySafeToggle();
+  safeToggle.addEventListener('click', () => {
+    safeSearch = !safeSearch;
+    localStorage.setItem('compass_safe_search', safeSearch ? '1' : '0');
+    applySafeToggle();
+  });
+
+  function toUrl(val){
+    const isSearchQuery = val.includes(' ') || !val.includes('.');
+    if (isSearchQuery){
+      let url = engineUrls[engine](val);
+      if (safeSearch) url += (url.includes('?') ? '&' : '?') + SAFE_PARAMS[engine];
+      return url;
+    }
+    return /^https?:\/\//i.test(val) ? val : 'https://' + val;
+  }
+
+  // ---------- браузер ----------
   const startPage = document.getElementById('startPage');
   const browserView = document.getElementById('browserView');
   const frame = document.getElementById('frame');
   const addressForm = document.getElementById('addressForm');
   const addressInput = document.getElementById('q');
   const clearBtn = document.getElementById('clearBtn');
-  const btnHome = document.getElementById('btnHome');
   const btnBack = document.getElementById('btnBack');
   const btnForward = document.getElementById('btnForward');
   const btnReload = document.getElementById('btnReload');
   const btnExternal = document.getElementById('btnExternal');
+  const btnBookmark = document.getElementById('btnBookmark');
+  const suggestList = document.getElementById('suggestList');
 
   let currentExternalUrl = null;
-
-  function toUrl(val){
-    const isSearchQuery = val.includes(' ') || !val.includes('.');
-    if (isSearchQuery) return engineUrls[engine](val);
-    return /^https?:\/\//i.test(val) ? val : 'https://' + val;
-  }
 
   function goToStartPage(){
     startPage.style.display = 'flex';
@@ -325,7 +406,10 @@
     currentExternalUrl = null;
     addressInput.value = '';
     clearBtn.classList.remove('show');
+    updateBookmarkBtn();
+    showSection('sec-home');
   }
+  document.getElementById('logoHome').addEventListener('click', goToStartPage);
 
   function navigate(rawVal){
     const val = rawVal.trim();
@@ -336,32 +420,49 @@
     browserView.classList.add('active');
     frame.src = targetUrl;
     addressInput.value = val;
+    suggestList.classList.remove('show');
     showSection('sec-home');
     saveToHistory(val);
+    updateBookmarkBtn();
   }
 
-  addressForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    navigate(addressInput.value);
+  addressForm.addEventListener('submit', (e) => { e.preventDefault(); navigate(addressInput.value); });
+  addressInput.addEventListener('input', () => {
+    clearBtn.classList.toggle('show', addressInput.value.length > 0);
+    renderSuggestions(addressInput.value);
   });
-
-  addressInput.addEventListener('input', () => clearBtn.classList.toggle('show', addressInput.value.length > 0));
-  clearBtn.addEventListener('click', () => { addressInput.value = ''; clearBtn.classList.remove('show'); addressInput.focus(); });
-
-  btnHome.addEventListener('click', goToStartPage);
+  addressInput.addEventListener('blur', () => setTimeout(() => suggestList.classList.remove('show'), 150));
+  clearBtn.addEventListener('click', () => { addressInput.value = ''; clearBtn.classList.remove('show'); suggestList.classList.remove('show'); addressInput.focus(); });
 
   btnBack.addEventListener('click', () => { try { frame.contentWindow.history.back(); } catch (e) {} });
   btnForward.addEventListener('click', () => { try { frame.contentWindow.history.forward(); } catch (e) {} });
   btnReload.addEventListener('click', () => {
     if (!currentExternalUrl) return;
-    const src = frame.src;
-    frame.src = 'about:blank';
+    const src = frame.src; frame.src = 'about:blank';
     requestAnimationFrame(() => { frame.src = src; });
   });
   btnExternal.addEventListener('click', () => {
     const url = currentExternalUrl || (addressInput.value ? toUrl(addressInput.value) : null);
     if (url) window.open(url, '_blank');
   });
+
+  // ---------- автодополнение по истории ----------
+  function renderSuggestions(val){
+    const term = val.trim().toLowerCase();
+    if (!term) { suggestList.classList.remove('show'); return; }
+    const history = JSON.parse(localStorage.getItem('compass_history') || '[]');
+    const matches = history.filter(h => h.query.toLowerCase().includes(term)).slice(0, 5);
+    if (matches.length === 0) { suggestList.classList.remove('show'); return; }
+    suggestList.innerHTML = '';
+    matches.forEach(m => {
+      const div = document.createElement('div');
+      div.className = 'suggest-item';
+      div.textContent = m.query;
+      div.addEventListener('mousedown', () => navigate(m.query));
+      suggestList.appendChild(div);
+    });
+    suggestList.classList.add('show');
+  }
 
   // ---------- история ----------
   function saveToHistory(query){
@@ -371,31 +472,127 @@
     localStorage.setItem('compass_history', JSON.stringify(history));
     renderHistory();
   }
-
   function renderHistory(){
     const list = document.getElementById('historyList');
     const history = JSON.parse(localStorage.getItem('compass_history') || '[]');
-    if (history.length === 0) {
-      list.innerHTML = '<li class="history-item"><span>История пуста</span></li>';
-      return;
-    }
+    if (history.length === 0) { list.innerHTML = '<li class="list-item"><span>История пуста</span></li>'; return; }
     list.innerHTML = '';
     history.forEach(item => {
       const li = document.createElement('li');
-      li.className = 'history-item';
-      li.innerHTML = `<span>${item.query}</span><span style="color:var(--ink-soft)">${item.time}</span>`;
-      li.addEventListener('click', () => navigate(item.query));
+      li.className = 'list-item';
+      li.innerHTML = `<span class="item-main">${item.query}</span><span style="color:var(--ink-soft); font-size:12px;">${item.time}</span>`;
+      li.querySelector('.item-main').addEventListener('click', () => navigate(item.query));
+      list.appendChild(li);
+    });
+  }
+  document.getElementById('clearHistoryBtn').addEventListener('click', () => { localStorage.removeItem('compass_history'); renderHistory(); });
+
+  // ---------- избранное ----------
+  function getBookmarks(){ return JSON.parse(localStorage.getItem('compass_bookmarks') || '[]'); }
+  function setBookmarksStore(arr){ localStorage.setItem('compass_bookmarks', JSON.stringify(arr)); renderBookmarks(); updateBookmarkBtn(); }
+  function updateBookmarkBtn(){
+    if (!currentExternalUrl) { btnBookmark.disabled = true; btnBookmark.textContent = '☆'; btnBookmark.classList.remove('active-star'); return; }
+    btnBookmark.disabled = false;
+    const active = getBookmarks().some(b => b.url === currentExternalUrl);
+    btnBookmark.textContent = active ? '★' : '☆';
+    btnBookmark.classList.toggle('active-star', active);
+  }
+  btnBookmark.addEventListener('click', () => {
+    if (!currentExternalUrl) return;
+    const list = getBookmarks();
+    const idx = list.findIndex(b => b.url === currentExternalUrl);
+    if (idx >= 0) list.splice(idx, 1);
+    else list.unshift({ title: addressInput.value || currentExternalUrl, url: currentExternalUrl });
+    setBookmarksStore(list.slice(0, 50));
+  });
+  function renderBookmarks(){
+    const list = document.getElementById('bookmarksList');
+    const bookmarks = getBookmarks();
+    if (bookmarks.length === 0) { list.innerHTML = '<li class="list-item"><span>Пока пусто — нажмите ☆ на открытой странице</span></li>'; return; }
+    list.innerHTML = '';
+    bookmarks.forEach((b, i) => {
+      const li = document.createElement('li');
+      li.className = 'list-item';
+      li.innerHTML = `<span class="item-main">${b.title}</span><button type="button" class="item-remove">✕</button>`;
+      li.querySelector('.item-main').addEventListener('click', () => {
+        currentExternalUrl = b.url;
+        startPage.style.display = 'none';
+        browserView.classList.add('active');
+        frame.src = b.url;
+        addressInput.value = b.title;
+        showSection('sec-home');
+        updateBookmarkBtn();
+      });
+      li.querySelector('.item-remove').addEventListener('click', () => { const l = getBookmarks(); l.splice(i, 1); setBookmarksStore(l); });
       list.appendChild(li);
     });
   }
 
-  document.getElementById('clearHistoryBtn').addEventListener('click', () => {
-    localStorage.removeItem('compass_history');
-    renderHistory();
-  });
-  renderHistory();
+  // ---------- быстрый доступ (свои сайты на главной) ----------
+  const TILE_COLORS = ['#33395C', '#C4592F', '#5C8D62', '#8892D1', '#B5544A'];
+  function getShortcuts(){ return JSON.parse(localStorage.getItem('compass_shortcuts') || '[]'); }
+  function setShortcutsStore(arr){ localStorage.setItem('compass_shortcuts', JSON.stringify(arr)); renderShortcuts(); }
+  function normalizeUrl(u){ let s = u.trim(); if (!/^https?:\/\//i.test(s)) s = 'https://' + s; return s; }
+  function renderShortcuts(){
+    const grid = document.getElementById('shortcutsGrid');
+    const items = getShortcuts();
+    grid.innerHTML = '';
+    items.forEach((s, i) => {
+      const tile = document.createElement('div');
+      tile.className = 'shortcut-tile';
+      tile.innerHTML = `
+        <a href="#" data-url="${s.url}">
+          <span class="shortcut-avatar" style="background:${TILE_COLORS[i % TILE_COLORS.length]}">${(s.name.trim().charAt(0) || '?').toUpperCase()}</span>
+          <span class="shortcut-label">${s.name}</span>
+        </a>
+        <button type="button" class="shortcut-remove">✕</button>
+      `;
+      tile.querySelector('a').addEventListener('click', (e) => { e.preventDefault(); navigate(s.url); });
+      tile.querySelector('.shortcut-remove').addEventListener('click', () => { const l = getShortcuts(); l.splice(i, 1); setShortcutsStore(l); });
+      grid.appendChild(tile);
+    });
+    const addTile = document.createElement('div');
+    addTile.className = 'shortcut-tile shortcut-add';
+    addTile.innerHTML = `<span class="shortcut-avatar">+</span><span class="shortcut-label">Добавить</span>`;
+    addTile.addEventListener('click', () => shortcutModal.classList.add('show'));
+    grid.appendChild(addTile);
+  }
 
-  // старт — пустая начальная страница
+  const shortcutModal = document.getElementById('shortcutModal');
+  document.getElementById('shortcutCancel').addEventListener('click', () => shortcutModal.classList.remove('show'));
+  document.getElementById('shortcutSave').addEventListener('click', () => {
+    const name = document.getElementById('shortcutName').value.trim();
+    const url = document.getElementById('shortcutUrl').value.trim();
+    if (!name || !url) return;
+    const list = getShortcuts();
+    list.push({ name, url: normalizeUrl(url) });
+    setShortcutsStore(list.slice(0, 12));
+    document.getElementById('shortcutName').value = '';
+    document.getElementById('shortcutUrl').value = '';
+    shortcutModal.classList.remove('show');
+  });
+
+  // ---------- установка PWA ----------
+  let deferredPrompt = null;
+  const btnInstall = document.getElementById('btnInstall');
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    btnInstall.style.display = 'inline-block';
+  });
+  btnInstall.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    btnInstall.style.display = 'none';
+  });
+  window.addEventListener('appinstalled', () => { btnInstall.style.display = 'none'; });
+
+  // ---------- инициализация ----------
+  renderHistory();
+  renderBookmarks();
+  renderShortcuts();
   goToStartPage();
 </script>
 

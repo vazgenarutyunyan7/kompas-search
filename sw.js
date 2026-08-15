@@ -1,6 +1,5 @@
-const CACHE_NAME = 'compass-v19';
+const CACHE_NAME = 'compass-v20';
 const urlsToCache = ['./', './index.html', './manifest.json'];
-
 // 1. Установка и мгновенное добавление новых файлов
 self.addEventListener('install', (event) => {
   self.skipWaiting(); // Принудительно активируем новый скрипт
@@ -8,7 +7,6 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
   );
 });
-
 // 2. Очистка СТАРОГО кэша (v1, v2 и т.д.) при запуске
 self.addEventListener('activate', (event) => {
   event.waitUntil(
@@ -24,7 +22,6 @@ self.addEventListener('activate', (event) => {
     }).then(() => self.clients.claim()) // Захватываем контроль над страницей
   );
 });
-
 // 3. Отдача файлов из нового кэша
 self.addEventListener('fetch', (event) => {
   event.respondWith(

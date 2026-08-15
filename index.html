@@ -519,7 +519,7 @@
   const SAFE_PARAMS = { google: 'safe=active', bing: 'safesearch=strict', duckduckgo: 'kp=1', yandex: 'family_filter=1' };
 
   const engineBtns = document.querySelectorAll('.engine-btn');
-  let engine = localStorage.getItem('selectedEngine') || 'duckduckgo';
+  let engine = localStorage.getItem('selectedEngine') || 'bing';
   function setActiveEngine(t){ engine = t; localStorage.setItem('selectedEngine', engine); engineBtns.forEach(b => b.classList.toggle('active', b.dataset.engine === engine)); }
   setActiveEngine(engine);
   engineBtns.forEach(btn => btn.addEventListener('click', () => setActiveEngine(btn.dataset.engine)));
